@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b71e972847b50aaf6d1f419ec2120e5a",
+    "content-hash": "29f8d114a271fb9374a87e9a333b97df",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4881,6 +4881,80 @@
                 }
             ],
             "time": "2023-04-15T23:01:58+00:00"
+        },
+        {
+            "name": "rupadana/filament-user-resource",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rupadana/filament-user-resource.git",
+                "reference": "9b632a25031d82807e19afeb8b1a8aa429cf78e3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rupadana/filament-user-resource/zipball/9b632a25031d82807e19afeb8b1a8aa429cf78e3",
+                "reference": "9b632a25031d82807e19afeb8b1a8aa429cf78e3",
+                "shasum": ""
+            },
+            "require": {
+                "filament/forms": "^3.0",
+                "illuminate/contracts": "^10.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^7.9",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.0",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Rupadana\\FilamentUserResource\\FilamentUserResourceServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentUserResource": "Rupadana\\FilamentUserResource\\Facades\\FilamentUserResource"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rupadana\\FilamentUserResource\\": "src/",
+                    "Rupadana\\FilamentUserResource\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rupadana",
+                    "email": "rupadanawayan@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Simple User Resource for filamentphp",
+            "homepage": "https://github.com/rupadana/filament-user-resource",
+            "keywords": [
+                "filament-user-resource",
+                "laravel",
+                "rupadana"
+            ],
+            "support": {
+                "issues": "https://github.com/rupadana/filament-user-resource/issues",
+                "source": "https://github.com/rupadana/filament-user-resource"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/rupadana",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-09-07T07:18:18+00:00"
         },
         {
             "name": "ryangjchandler/blade-capture-directive",
