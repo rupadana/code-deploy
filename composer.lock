@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "29f8d114a271fb9374a87e9a333b97df",
+    "content-hash": "315e35b9b8de5dc57df224b18aacd86d",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -1745,6 +1745,64 @@
                 }
             ],
             "time": "2023-02-25T20:23:15+00:00"
+        },
+        {
+            "name": "guava/filament-icon-picker",
+            "version": "2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lukas-frey/filament-icon-picker.git",
+                "reference": "b032aef727a26d9e0107304f308197a34d26db6a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lukas-frey/filament-icon-picker/zipball/b032aef727a26d9e0107304f308197a34d26db6a",
+                "reference": "b032aef727a26d9e0107304f308197a34d26db6a",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0@stable",
+                "illuminate/contracts": "^9.0|^10.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^7.0|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Guava\\FilamentIconPicker\\FilamentIconPickerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Guava\\FilamentIconPicker\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lukas Frey",
+                    "email": "mail@lukasfrey.cz"
+                }
+            ],
+            "description": "A filament plugin that adds an icon picker field.",
+            "support": {
+                "issues": "https://github.com/lukas-frey/filament-icon-picker/issues",
+                "source": "https://github.com/lukas-frey/filament-icon-picker/tree/2.0.4"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/LukasFreyCZ",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-01-27T07:45:49+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4881,6 +4939,83 @@
                 }
             ],
             "time": "2023-04-15T23:01:58+00:00"
+        },
+        {
+            "name": "rupadana/filament-announce",
+            "version": "3.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rupadana/filament-announce.git",
+                "reference": "31a78db7b9ead48e98b4a93a43055b08e9ba38aa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rupadana/filament-announce/zipball/31a78db7b9ead48e98b4a93a43055b08e9ba38aa",
+                "reference": "31a78db7b9ead48e98b4a93a43055b08e9ba38aa",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "guava/filament-icon-picker": "^2.0",
+                "illuminate/contracts": "^10.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^7.9",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.0",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0",
+                "phpunit/phpunit": "^10.0.17"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Rupadana\\FilamentAnnounce\\FilamentAnnounceServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentAnnounce": "Rupadana\\FilamentAnnounce\\Facades\\FilamentAnnounce"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rupadana\\FilamentAnnounce\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rupadana",
+                    "email": "rupadanawayan@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An easy way to shout your exceptional offerings to the potential users",
+            "homepage": "https://github.com/rupadana/filament-announce",
+            "keywords": [
+                "filament",
+                "filament-announce",
+                "filamentphp",
+                "laravel",
+                "rupadana"
+            ],
+            "support": {
+                "issues": "https://github.com/rupadana/filament-announce/issues",
+                "source": "https://github.com/rupadana/filament-announce"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/rupadana",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-01-29T11:22:24+00:00"
         },
         {
             "name": "rupadana/filament-user-resource",
