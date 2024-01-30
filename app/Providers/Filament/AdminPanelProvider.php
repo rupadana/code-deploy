@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use ChrisReedIO\Socialment\SocialmentPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -18,6 +19,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Laravel\Socialite\Facades\Socialite;
 use Rupadana\FilamentAnnounce\FilamentAnnouncePlugin;
 use Rupadana\FilamentUserResource\FilamentUserResourcePlugin;
 
@@ -38,7 +40,9 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentUserResourcePlugin::make(),
                 FilamentShieldPlugin::make(),
-                FilamentAnnouncePlugin::make()
+                FilamentAnnouncePlugin::make(),
+                SocialmentPlugin::make()
+                    ->registerProvider('github', 'fab-github', 'Github')
             ])
             ->pages([
                 Pages\Dashboard::class,
