@@ -31,24 +31,27 @@ Artisan::command('inspire', function () {
 
 Artisan::command('test', function () {
 
-    $key = 'APP_DEBUG';
-    $value = 'Hello world';
+    // $key = 'APP_DEBUG';
+    // $value = 'Hello world';
 
-    $envPath = '/Users/rupadana/Freelance/app.codecrafters.id/storage/private/.env.demo123.codecrafters.id.39';
-    $envString = file_get_contents($envPath);
+    // $envPath = '/Users/rupadana/Freelance/app.codecrafters.id/storage/private/.env.demo123.codecrafters.id.39';
+    // $envString = file_get_contents($envPath);
 
-    // $env = SitesRelationManager::changeEnvVariable($envString, 'DB_DATABASE', $value);
-    $env = SitesRelationManager::changeEnvVariable($envString, 'DB_PASSWORD', $value);
-    // $env = SitesRelationManager::changeEnvVariable($env, 'DB_USERNAME', $value);
-    dd($env);
+    // // $env = SitesRelationManager::changeEnvVariable($envString, 'DB_DATABASE', $value);
+    // $env = SitesRelationManager::changeEnvVariable($envString, 'DB_PASSWORD', $value);
+    // // $env = SitesRelationManager::changeEnvVariable($env, 'DB_USERNAME', $value);
+    // dd($env);
 
 
-    // $server = Server::first();
+    $server = Server::first();
+    // dd($server);
+    $process = DeployScript::make()
+        ->server($server)
+        ->domain('demo123.codecrafters.id')
+        ->script('echo "hello world"')
+        ->execute();
 
-    // $process = DeployScript::make()
-    //     ->server($server)
-    //     ->domain('demo123.codecrafters.id')
-    //     ->uploadEnv();
+        dd($process->isSuccessful(), $process->getErrorOutput(), $process->getOutput());
 });
 
 
