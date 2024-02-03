@@ -260,7 +260,12 @@ class DeployScript
 
     public function checkoutTo(string $commit): static
     {
-        return $this->script('git checkout ' . $commit);
+        return $this->gitFetch()->script('git checkout ' . $commit);
+    }
+
+    public function gitFetch(): static
+    {
+        return $this->script('git fetch');
     }
 
     public function downloadEnv(?string $destination = null): Process
