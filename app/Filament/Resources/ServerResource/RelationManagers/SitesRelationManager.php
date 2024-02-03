@@ -175,21 +175,21 @@ class SitesRelationManager extends RelationManager
                                 $connectedAccount = $server->owner->connectedAccount;
                                 $token = $connectedAccount->token;
 
-                                $githubApi = GithubApi::make($token)
-                                    ->repos($record->repository)
-                                    ->hooks()
-                                    ->post([
-                                        'name' => 'web',
-                                        'config' => [
-                                            'url' => "https://demo.codecrafters.id/api/admin/sites/16/deploy?token=2%7CMtgqBeN2IoAcpiTUYE9qOjfAG1GJVu6F2z21LhA134e1b333",
-                                            "content_type" => "json",
-                                            "insecure_ssl" => "1"
-                                        ]
-                                    ]);
-                                dd($githubApi, route('api.admin.sites.deploy', [
-                                    'id' => $record->id,
-                                    'token' => '2|MtgqBeN2IoAcpiTUYE9qOjfAG1GJVu6F2z21LhA134e1b333'
-                                ]));
+                                // $githubApi = GithubApi::make($token)
+                                //     ->repos($record->repository)
+                                //     ->hooks()
+                                //     ->post([
+                                //         'name' => 'web',
+                                //         'config' => [
+                                //             'url' => "https://demo.codecrafters.id/api/admin/sites/16/deploy?token=2%7CMtgqBeN2IoAcpiTUYE9qOjfAG1GJVu6F2z21LhA134e1b333",
+                                //             "content_type" => "json",
+                                //             "insecure_ssl" => "1"
+                                //         ]
+                                //     ]);
+                                // dd($githubApi, route('api.admin.sites.deploy', [
+                                //     'id' => $record->id,
+                                //     'token' => '2|MtgqBeN2IoAcpiTUYE9qOjfAG1GJVu6F2z21LhA134e1b333'
+                                // ]));
 
                                 $domain = $record->domain;
                                 // TODO : Use job to deploy

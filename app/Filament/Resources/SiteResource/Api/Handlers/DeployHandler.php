@@ -53,6 +53,10 @@ class DeployHandler extends Handlers
 
             if ($process->isSuccessful()) {
                 return static::sendSuccessResponse(null, $process->getOutput());
+            } else {
+                return response()->json([
+                    'message' => $process->getErrorOutput(),
+                ], 500);
             }
         }
 
