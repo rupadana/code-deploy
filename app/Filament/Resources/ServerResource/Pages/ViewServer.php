@@ -42,6 +42,8 @@ class ViewServer extends ViewRecord
                         ->usePrivateKey($path)
                         ->execute("echo 'connection success'");
 
+                    dd($process->getErrorOutput(), $process->getOutput());
+
                     if ($process->isSuccessful()) {
                         return Notification::make('success-notification')
                             ->success()
