@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ServerResource\Pages;
 use App\Filament\Resources\ServerResource;
 use App\Infolists\Components\SshPubView;
 use App\Models\Server;
+use App\Services\DeployScript;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\Section;
@@ -31,15 +32,7 @@ class ViewServer extends ViewRecord
                 ->color(Color::Green)
                 ->action(function (Server $record) {
 
-                    $host = $record->host;
-                    $user = $record->user;
-
-                    $path = storage_path('private/' . $record->ssh_key_name);
-
-                    $process = Ssh::create($user, $host)
-                        ->disableStrictHostKeyChecking()
-                        ->enableQuietMode()
-                        ->usePrivateKey($path)
+                    $process = DeployScript::make($record)
                         ->execute("echo 'connection success'");
 
                     if ($process->isSuccessful()) {

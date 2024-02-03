@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ServerResource\Pages;
 
 use App\Filament\Resources\ServerResource;
 use App\Models\Server;
+use App\Services\DeployScript;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -24,15 +25,7 @@ class EditServer extends EditRecord
                 ->color(Color::Green)
                 ->action(function (Server $record) {
 
-                    $host = $record->host;
-                    $user = $record->user;
-
-                    $path = storage_path('private/' . $record->ssh_key_name);
-
-                    $process = Ssh::create($user, $host)
-                        ->disablePasswordAuthentication()
-                        ->enableQuietMode()
-                        ->usePrivateKey($path)
+                    $process = DeployScript::make($record)
                         ->execute("echo 'connection success'");
 
                     if ($process->isSuccessful()) {
