@@ -200,6 +200,11 @@ class SitesRelationManager extends RelationManager
                                     ->server($server)
                                     ->execute();
 
+                                dd(
+                                    $process->getErrorOutput(),
+                                    $process->getOutput(),
+                                );
+
                                 if ($process->isSuccessful()) {
                                     return Notification::make('notif-1')
                                         ->title('Your site is now live!')

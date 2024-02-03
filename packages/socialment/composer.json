@@ -1,6 +1,7 @@
 {
     "name": "chrisreedio/socialment",
     "description": "Provides Socialite functionality for Filament.",
+    "version": "3.x-dev",
     "keywords": [
         "chrisreedio",
         "laravel",
