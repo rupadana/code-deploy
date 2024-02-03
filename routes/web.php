@@ -1,6 +1,7 @@
 <?php
 
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GithubProvider;
@@ -23,6 +24,6 @@ use Rupadana\GithubApi\GithubApi;
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', function () {
-        return "hello world 11";
+        return "Release : " . Cache::get('release');
     });
 });

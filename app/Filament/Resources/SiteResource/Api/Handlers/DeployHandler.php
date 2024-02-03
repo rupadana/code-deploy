@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\SiteResource;
 use App\Services\DeployScript;
+use Illuminate\Support\Facades\Cache;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class DeployHandler extends Handlers
@@ -51,7 +52,7 @@ class DeployHandler extends Handlers
                 ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)))
                 ->execute();
 
-
+            Cache::set('release', $request->after);
 
             if ($process->isSuccessful()) {
                 return static::sendSuccessResponse(null, $process->getOutput());
