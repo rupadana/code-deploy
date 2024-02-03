@@ -23,6 +23,6 @@ use Rupadana\GithubApi\GithubApi;
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', function () {
-        return "hello world 3";
+        return "hello world 4";
     });
 });
