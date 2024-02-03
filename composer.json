@@ -81,11 +81,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "/Users/rupadana/packages/chrisreedio/socialment"
-        },
-        {
-            "type": "path",
-            "url": "packages/github-rest-api"
+            "url": "packages/*"
         }
 
     ]
