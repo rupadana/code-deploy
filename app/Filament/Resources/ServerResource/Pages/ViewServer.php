@@ -37,10 +37,11 @@ class ViewServer extends ViewRecord
                     $path = storage_path('private/' . $record->ssh_key_name);
 
                     $process = Ssh::create($user, $host)
+                        ->disableStrictHostKeyChecking()
                         ->disablePasswordAuthentication()
                         ->enableQuietMode()
                         ->usePrivateKey($path)
-                        ->disableStrictHostKeyChecking()
+
                         ->execute("echo 'connection success'");
 
                     if ($process->isSuccessful()) {
