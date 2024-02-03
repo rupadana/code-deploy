@@ -31,9 +31,11 @@ class DeployScript
         $this->databasePassword = uniqid();
     }
 
-    public static function make(): self
+    public static function make(?Server $server = null): self
     {
-        return new static;
+        $instance = new static;
+
+        return $instance->server($server);
     }
 
     public function getSsh(): Ssh
