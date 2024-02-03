@@ -40,9 +40,8 @@ class ViewServer extends ViewRecord
                         ->disablePasswordAuthentication()
                         ->enableQuietMode()
                         ->usePrivateKey($path)
+                        ->disableStrictHostKeyChecking()
                         ->execute("echo 'connection success'");
-
-                    dd($process->isSuccessful(), $process->getErrorOutput(), $process->getOutput());
 
                     if ($process->isSuccessful()) {
                         return Notification::make('success-notification')

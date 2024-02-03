@@ -48,6 +48,7 @@ class DeployScript
 
         $ssh = Ssh::create($this->server->user, $this->server->host)
             ->disablePasswordAuthentication()
+            ->disableStrictHostKeyChecking()
             ->enableQuietMode()
             ->usePrivateKey($ssh_private_key_path);
 
