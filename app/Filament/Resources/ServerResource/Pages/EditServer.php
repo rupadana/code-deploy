@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Filament\Resources\ServerResource\Pages;
+
+use App\Filament\Resources\ServerResource;
+use App\Models\Server;
+use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Colors\Color;
+use Spatie\Ssh\Ssh;
+
+class EditServer extends EditRecord
+{
+    protected static string $resource = ServerResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\ViewAction::make(),
+            Actions\DeleteAction::make(),
+            Action::make('check-connection')
+                ->color(Color::Green)
+                ->action(function (Server $record) {
+
+                    $host = $record->host;
+                    $user = $record->user;
+
+                    $path = storage_path('private/' . $record->ssh_key_name);
+
+                    $process = Ssh::create($user, $host)
+                        ->disablePasswordAuthentication()
+                        ->enableQuietMode()
+                        ->usePrivateKey($path)
+                        ->execute("echo 'connection success'");
+
+                    if ($process->isSuccessful()) {
+                        return Notification::make('success-notification')
+                            ->success()
+                            ->title('Connection successfully')
+                            ->send();
+                    }
+
+
+                    return Notification::make('failed-notification')
+                        ->danger()
+                        ->title('Connection failed')
+                        ->body($process->getErrorOutput())
+                        ->send();
+                })
+        ];
+    }
+}

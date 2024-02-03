@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GithubProvider;
 use Laravel\Socialite\Two\User;
+use Rupadana\GithubApi\GithubApi;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,12 @@ Route::group(['middleware' => ['web']], function () {
 
         $user = Socialite::driver('github')->userFromToken(ConnectedAccount::query()->where('user_id', auth()->user()->id)->first()->token);
         
+
+        $github = GithubApi::make(ConnectedAccount::query()->where('user_id', auth()->user()->id)->first()->token);
+
+        dd($github->commits('app.codecrafters.id')->first());
+
+
         $name = $user->getNickname();
         $token = $user->token;
         // We generate the url for curl

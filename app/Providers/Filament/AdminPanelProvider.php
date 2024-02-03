@@ -20,6 +20,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Laravel\Socialite\Facades\Socialite;
+use Rupadana\ApiService\ApiServicePlugin;
 use Rupadana\FilamentAnnounce\FilamentAnnouncePlugin;
 use Rupadana\FilamentUserResource\FilamentUserResourcePlugin;
 
@@ -40,9 +41,12 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentUserResourcePlugin::make(),
                 FilamentShieldPlugin::make(),
-                FilamentAnnouncePlugin::make(),
+                // FilamentAnnouncePlugin::make(),
                 SocialmentPlugin::make()
-                    ->registerProvider('github', 'fab-github', 'Github')
+                    ->registerProvider('github', 'fab-github', 'Github', scopes: [
+                        'repo', 'read:user'
+                    ]),
+                ApiServicePlugin::make()
             ])
             ->pages([
                 Pages\Dashboard::class,
