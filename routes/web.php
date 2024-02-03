@@ -26,4 +26,5 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/', function () {
         return "Release : " . Cache::get('release');
     });
+    
 });
