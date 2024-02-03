@@ -71,7 +71,20 @@ class SitesRelationManager extends RelationManager
                                                     ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
                                                 $process = $deployScript->execute();
 
+                                                $notification = Notification::make();
+
+                                                if ($process->isSuccessful()) {
+                                                    $notification->title('Deployment successfully')
+                                                        ->success();
+                                                } else {
+                                                    $notification->title('Deployment failed')
+                                                        ->danger();
+                                                }
+
+
                                                 $record->save();
+
+                                                $notification->send();
                                             })
                                     ]),
 
