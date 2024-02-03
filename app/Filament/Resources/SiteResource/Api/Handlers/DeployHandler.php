@@ -48,8 +48,12 @@ class DeployHandler extends Handlers
                 ->actAsSiteUser()
                 ->toSiteDirectory()
                 ->checkoutTo($request->after)
-                ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)))
-                ->execute();
+                ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
+
+                dd($process->getScript());
+
+                $process->execute();
+
 
 
             if ($process->isSuccessful()) {
