@@ -42,7 +42,7 @@ class ViewServer extends ViewRecord
                         ->usePrivateKey($path)
                         ->execute("echo 'connection success'");
 
-                    dd($process->getErrorOutput(), $process->getOutput());
+                    dd($process->isSuccessful(), $process->getErrorOutput(), $process->getOutput());
 
                     if ($process->isSuccessful()) {
                         return Notification::make('success-notification')
@@ -82,7 +82,7 @@ class ViewServer extends ViewRecord
                 Section::make('SSH Key')
                     ->schema([
                         SshPubView::make('ssh_pub')
-                        ->label('SSH Public Key'),
+                            ->label('SSH Public Key'),
                     ])
                     ->description('Make sure this SSH key is present in the /user/.ssh/authorized_keys or /root/.ssh/authorized_keys file')
                     ->columnSpan(1),
@@ -93,7 +93,7 @@ class ViewServer extends ViewRecord
                         TextEntry::make('host'),
                         TextEntry::make('ssh_port'),
                     ])->columnSpan(1),
-                
+
             ]);
     }
 }
