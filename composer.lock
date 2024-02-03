@@ -5683,8 +5683,8 @@
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "packages/github-rest-api",
-                "reference": "90f7b78e5484a1d3beafd8b9572c97591e3358fa"
+                "url": "packages/rupadana-github-rest-api",
+                "reference": "9b8f363e1bb408985c02e462983394454853c0cc"
             },
             "require": {
                 "illuminate/contracts": "^10.0",
