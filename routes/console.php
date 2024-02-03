@@ -47,11 +47,18 @@ Artisan::command('test', function () {
     // dd($server);
     $process = DeployScript::make()
         ->server($server)
-        ->domain('demo123.codecrafters.id')
-        ->script('echo "hello world"')
-        ->execute();
-
-        dd($process->isSuccessful(), $process->getErrorOutput(), $process->getOutput());
+        ->domain('deploy.codecrafters.id')
+        ->actAsSiteUser()
+        ->toSiteDirectory()
+        ->checkoutTo('11ab9553f46f9470134e75fe4bb30f55b815b366');
+        // ->execute();
+    // dd($process->getScript());
+    // DeployScript::make()
+    //     ->server($server)
+    //     ->domain($record->domain)
+    //     ->actAsSiteUser()
+    //     ->toSiteDirectory()
+    // ->checkoutTo('11ab9553f46f9470134e75fe4bb30f55b815b366');
 });
 
 
@@ -62,7 +69,6 @@ Artisan::command('auth-con', function () {
         ->repos('rupadana/app.codecrafters.id')
         ->commits()
         ->get();
-
 });
 
 
