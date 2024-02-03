@@ -47,7 +47,7 @@ class DeployHandler extends Handlers
                 ->domain($record->domain)
                 ->actAsSiteUser()
                 ->toSiteDirectory()
-                ->checkoutTo($request->after)
+                ->gitPull()
                 ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)))
                 ->execute();
 
