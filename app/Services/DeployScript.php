@@ -23,10 +23,12 @@ class DeployScript
 
     protected ?Server $server = null;
 
+    protected ?string $databasePassword = '';
+
 
     private function __construct()
     {
-        // Private constructor to prevent creating a new instance via the `new` operator from outside of this class.
+        $this->databasePassword = uniqid();
     }
 
     public static function make(): self
@@ -34,9 +36,8 @@ class DeployScript
         return new static;
     }
 
-    public function execute(): Process
+    public function getSsh(): Ssh
     {
-
         if (!$this->server) throw new Exception("Server login is empty");
 
         $this->script([
@@ -45,13 +46,18 @@ class DeployScript
 
         $ssh_private_key_path = storage_path('private/' . $this->server->ssh_key_name);
 
-        $process = Ssh::create($this->server->user, $this->server->host)
+        $ssh = Ssh::create($this->server->user, $this->server->host)
             ->disablePasswordAuthentication()
             ->enableQuietMode()
-            ->usePrivateKey($ssh_private_key_path)
-            ->execute($this->getScript());
+            ->usePrivateKey($ssh_private_key_path);
 
-        return $process;
+        return $ssh;
+    }
+
+    public function execute(): Process
+    {
+        return $this->getSsh()
+            ->execute($this->getScript());
     }
 
     /**
@@ -76,8 +82,6 @@ class DeployScript
 
     public function initiate(): static
     {
-        $this->initiate = true;
-
         $domain = $this->getDomain();
         $siteUser = $this->getSiteUser();
         $repositoryUrl = $this->getRepositoryUrl();
@@ -90,8 +94,12 @@ class DeployScript
             $siteUser = str($domain)->replace('.', '-')->toString();
         }
 
+        $databasePassword = $this->getDatabasePassword();
+        $databaseName = $this->getDatabaseName();
+
         $this->script([
             "clpctl site:add:php --domainName=$domain --phpVersion=8.2 --vhostTemplate='Laravel 10' --siteUser=$siteUser --siteUserPassword='!secretPassword!'",
+            "clpctl db:add --domainName=$domain --databaseName=$databaseName --databaseUserName=$siteUser --databaseUserPassword='$databasePassword'",
             "rm -rf /home/$siteUser/htdocs/$domain",
             "su $siteUser",
             "cd ~/htdocs",
@@ -107,6 +115,10 @@ class DeployScript
         return $this;
     }
 
+    public function getDatabaseName(): string
+    {
+        return str($this->getDomain())->explode('.')->slice(0, -1)->implode('-');
+    }
     /**
      * Get the value of script
      */
@@ -243,8 +255,45 @@ class DeployScript
         return $this->script("su " . $this->getSiteUser());
     }
 
-    public function checkoutTo(string $commit) : static 
+    public function checkoutTo(string $commit): static
     {
         return $this->script('git checkout ', $commit);
+    }
+
+    public function downloadEnv(?string $destination = null): Process
+    {
+        return $this->getSsh()
+            ->download('/home/' . $this->getSiteUser() . '/htdocs/' . $this->getDomain() . '/.env', $destination ?? storage_path('private' . '/.env.' . $this->getDomain()));
+    }
+
+    public function uploadEnv(?string $source = null): Process
+    {
+        return $this->getSsh()
+            ->upload($source ?? storage_path('private' . '/.env.' . $this->getDomain()), '/home/' . $this->getSiteUser() . '/htdocs/' . $this->getDomain() . '/.env');
+    }
+
+    /**
+     * Get the value of databasePassword
+     */
+    public function getDatabasePassword(): string
+    {
+        return $this->databasePassword;
+    }
+
+    public function gitPull(): static
+    {
+        return $this->script('git pull');
+    }
+
+    /**
+     * Set the value of databasePassword
+     *
+     * @return  self
+     */
+    public function databasePassword($databasePassword): static
+    {
+        $this->databasePassword = $databasePassword;
+
+        return $this;
     }
 }

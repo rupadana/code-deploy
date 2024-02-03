@@ -1,6 +1,8 @@
 <?php
 
+use App\Filament\Resources\ServerResource\RelationManagers\SitesRelationManager;
 use App\Models\Server;
+use App\Services\DeployScript;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -29,29 +31,24 @@ Artisan::command('inspire', function () {
 
 Artisan::command('test', function () {
 
-    $server = Server::find(1);
-    $host = $server->host;
-    $user = $server->user;
+    $key = 'APP_DEBUG';
+    $value = 'Hello world';
 
-    $path = storage_path('private/' . $server->ssh_key_name);
-    exec('chmod 600 ' . $path);
+    $envPath = '/Users/rupadana/Freelance/app.codecrafters.id/storage/private/.env.demo123.codecrafters.id.39';
+    $envString = file_get_contents($envPath);
 
-    $process = SshSsh::create($user, $host)
-        ->disablePasswordAuthentication()
-        ->enableQuietMode()
-        ->usePrivateKey($path)
-        ->configureProcess(
-            fn (Process $process) => $process->setTimeout(null)
-            // ->setTty(true)
-        )
-        ->execute([
-            "mkdir rups",
-        ]);
-
-    // dd($process->getErrorOutput(), $process->isSuccessful());
+    // $env = SitesRelationManager::changeEnvVariable($envString, 'DB_DATABASE', $value);
+    $env = SitesRelationManager::changeEnvVariable($envString, 'DB_PASSWORD', $value);
+    // $env = SitesRelationManager::changeEnvVariable($env, 'DB_USERNAME', $value);
+    dd($env);
 
 
+    // $server = Server::first();
 
+    // $process = DeployScript::make()
+    //     ->server($server)
+    //     ->domain('demo123.codecrafters.id')
+    //     ->uploadEnv();
 });
 
 
@@ -63,5 +60,25 @@ Artisan::command('auth-con', function () {
         ->commits()
         ->get();
 
-    dd($data);
 });
+
+
+if (!function_exists('put_permanent_env')) {
+    function put_permanent_env($key, $value)
+    {
+        $path = app()->environmentFilePath();
+
+        if (gettype(env($key)) === 'boolean') {
+            $bool = env($key) ? 'true' : 'false';
+            $escaped = preg_quote('=' . $bool, '/');
+        } else {
+            $escaped = preg_quote('=' . env($key), '/');
+        }
+
+        file_put_contents($path, preg_replace(
+            "/^{$key}{$escaped}/m",
+            "{$key}={$value}",
+            file_get_contents($path)
+        ));
+    }
+}

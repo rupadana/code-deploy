@@ -14,10 +14,14 @@ class Site extends Model
         'domain',
         'server_id',
         'repository',
-        'script'
+        'script',
+        'environment',
+        'database_name',
+        'database_password',
     ];
 
-    public function server() : BelongsTo {
+    public function server(): BelongsTo
+    {
         return $this->belongsTo(Server::class, 'server_id');
     }
 }
