@@ -65,10 +65,6 @@ class SitesRelationManager extends RelationManager
                                     ])
                                     ->hiddenOn('create')
                                     ->headerActions([
-                                        Action::make('dispatch')
-                                            ->action(function () {
-                                                $this->dispatch('deploy-logs', 'out', 'hello');
-                                            }),
                                         Action::make('deploy')
                                             ->action(function (Site $record, Get $get) {
 
