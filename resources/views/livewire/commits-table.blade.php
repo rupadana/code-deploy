@@ -20,8 +20,7 @@
         
                         </div>
                     </div>
-        
-        
+    
         
                     <div
                         class="fi-ta-header-toolbar flex items-center justify-between gap-x-4 px-4 py-3 sm:px-6"
@@ -230,5 +229,4 @@
             
         </x-filament-tables::container>
     </div>
-
 </div>
