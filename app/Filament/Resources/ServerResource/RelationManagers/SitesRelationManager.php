@@ -57,6 +57,7 @@ class SitesRelationManager extends RelationManager
                             ->columns(),
 
                         Tab::make('Deployment')
+                            ->hiddenOn('create')
                             ->schema([
                                 Section::make('Deployment')
                                     ->schema([

@@ -61,8 +61,12 @@ class ServerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
-                    ->label("Manage server"),
+                Action::make('manage-site')
+                    ->label('Site')
+                    ->url(fn (Server $record): string => route('filament.admin.resources.servers.site', $record))
+                    ->icon('heroicon-o-globe-alt'),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
