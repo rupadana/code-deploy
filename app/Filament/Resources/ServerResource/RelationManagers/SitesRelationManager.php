@@ -53,6 +53,11 @@ class SitesRelationManager extends RelationManager
                                     ->hiddenOn('edit')
                                     ->columnSpanFull(),
 
+                            ])
+                            ->columns(),
+
+                        Tab::make('Deployment')
+                            ->schema([
                                 Section::make('Deployment')
                                     ->schema([
                                         Textarea::make('script')
@@ -114,12 +119,7 @@ class SitesRelationManager extends RelationManager
                                         'record' => $this->getCurrentRecordFromTable()
                                     ])
                                     ->columnSpanFull()
-
-
-
-                            ])
-                            ->columns(),
-
+                            ]),
                         // Tab::make('Commits')
                         //     ->schema([
                         //         ,
