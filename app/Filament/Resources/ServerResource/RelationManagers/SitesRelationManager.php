@@ -317,6 +317,7 @@ class SitesRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->label('Manage site')
                     ->slideOver(),
                 Tables\Actions\DeleteAction::make()
                     ->after(function (Site $record) {

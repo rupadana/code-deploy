@@ -60,8 +60,8 @@ class ServerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                ViewPublicKey::make('view-public-key')
+                Tables\Actions\EditAction::make()
+                    ->label("Manage server"),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
