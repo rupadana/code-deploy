@@ -175,6 +175,11 @@ class SitesRelationManager extends RelationManager
             ]);
     }
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     protected function getCurrentRecordFromTable()
     {
         return $this->cachedMountedTableActionRecord;

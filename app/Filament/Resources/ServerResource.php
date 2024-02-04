@@ -10,6 +10,7 @@ use App\Models\Server;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
@@ -72,9 +73,7 @@ class ServerResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            SitesRelationManager::class
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -84,6 +83,16 @@ class ServerResource extends Resource
             'create' => Pages\CreateServer::route('/create'),
             'view' => Pages\ViewServer::route('/{record}'),
             'edit' => Pages\EditServer::route('/{record}/edit'),
+            'site' => Pages\ManageSite::route('/{record}/site'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\EditServer::class,
+            Pages\ViewServer::class,
+            Pages\ManageSite::class,
+        ]);
     }
 }
