@@ -42,10 +42,6 @@ class DeployScript
     {
         if (!$this->server) throw new Exception("Server login is empty");
 
-        $this->script([
-            'echo "Script Executed"'
-        ]);
-
         $ssh_private_key_path = storage_path('private/' . $this->server->ssh_key_name);
 
         $ssh = Ssh::create($this->server->user, $this->server->host)

@@ -14,6 +14,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\View;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -55,12 +56,18 @@ class SitesRelationManager extends RelationManager
                                 Section::make('Deployment')
                                     ->schema([
                                         Textarea::make('script')
-                                            ->rows(10)
+                                            ->rows(10),
                                     ])
                                     ->hiddenOn('create')
                                     ->headerActions([
+                                        Action::make('dispatch')
+                                            ->action(function () {
+                                                $this->dispatch('deploy-logs', 'out', 'hello');
+                                            }),
                                         Action::make('deploy')
                                             ->action(function (Site $record, Get $get) {
+
+                                                $this->dispatch('deploy-logs', 'out', 'Starting deployment...');
                                                 $record->script = $get('script');
                                                 $deployScript = DeployScript::make()
                                                     ->server($record->server)
@@ -71,12 +78,16 @@ class SitesRelationManager extends RelationManager
                                                     ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
                                                 $process = $deployScript->execute();
 
+
+
                                                 $notification = Notification::make();
 
                                                 if ($process->isSuccessful()) {
+                                                    $this->dispatch('deploy-logs', 'out', $process->getOutput());
                                                     $notification->title('Deployment successfully')
                                                         ->success();
                                                 } else {
+                                                    $this->dispatch('deploy-logs', 'out', $process->getErrorOutput());
                                                     $notification->title('Deployment failed')
                                                         ->danger();
                                                 }
@@ -88,23 +99,32 @@ class SitesRelationManager extends RelationManager
                                             })
                                     ]),
 
-                                // Section::make('Deployment History')
-                                //     ->schema([])
+
+                                Section::make('Deployment Log')
+                                    ->schema([
+                                        View::make('view-deployment-logs')
+                                            ->viewData([
+                                                'listener' => 'deploy-logs'
+                                            ])
+                                    ]),
+                                ViewField::make('commits')
+                                    ->view('view-commits')
+                                    ->viewData([
+                                        'commits' => $this->getCommits()->toArray(),
+                                        'record' => $this->getCurrentRecordFromTable()
+                                    ])
+                                    ->columnSpanFull()
+
 
 
                             ])
                             ->columns(),
 
-                        Tab::make('Commits')
-                            ->schema([
-                                ViewField::make('commits')
-                                    ->view('view-commits')
-                                    ->viewData([
-                                        'commits' => $this->getCommits()->toArray()
-                                    ])
-                                    ->columnSpanFull()
-                            ])
-                            ->hiddenOn('create'),
+                        // Tab::make('Commits')
+                        //     ->schema([
+                        //         ,
+                        //     ])
+                        //     ->hiddenOn('create'),
                         Tab::make('Environment')
                             ->schema([
                                 Section::make('.env')
@@ -156,6 +176,11 @@ class SitesRelationManager extends RelationManager
 
 
             ]);
+    }
+
+    protected function getCurrentRecordFromTable()
+    {
+        return $this->cachedMountedTableActionRecord;
     }
 
     protected function getCommits()

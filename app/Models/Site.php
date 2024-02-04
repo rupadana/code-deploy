@@ -18,6 +18,7 @@ class Site extends Model
         'environment',
         'database_name',
         'database_password',
+        'current_sha'
     ];
 
     public function server(): BelongsTo

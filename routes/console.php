@@ -48,10 +48,18 @@ Artisan::command('test', function () {
     $process = DeployScript::make()
         ->server($server)
         ->domain('deploy.codecrafters.id')
-        ->actAsSiteUser()
-        ->toSiteDirectory()
-        ->checkoutTo('11ab9553f46f9470134e75fe4bb30f55b815b366');
-        // ->execute();
+        ->script([
+            'echo "Hello World"',
+            'echo "Hello World 2"',
+            'echo "Hello World 3"',
+            'echo "Hello World 4"',
+            'echo "Hello World 5"',
+            'echo "Hello World 6"',
+            'echo "Hello World 7"',
+            'echo "Hello World"',
+        ])
+        ->execute();
+    // ->execute();
     // dd($process->getScript());
     // DeployScript::make()
     //     ->server($server)

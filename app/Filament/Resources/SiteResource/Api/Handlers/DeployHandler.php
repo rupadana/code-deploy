@@ -42,7 +42,6 @@ class DeployHandler extends Handlers
         if ($request->header('X-GitHub-Event') == 'push') {
             $server = $record->server;
 
-            // dd($request->all());
             $process = DeployScript::make()
                 ->server($server)
                 ->domain($record->domain)
@@ -52,9 +51,14 @@ class DeployHandler extends Handlers
                 ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)))
                 ->execute();
 
-            Cache::set('release', $request->after);
 
             if ($process->isSuccessful()) {
+
+                Cache::set('release', $request->after, 86400 * 30);
+
+                $record->current_sha = $request->after;
+                $record->save();
+
                 return static::sendSuccessResponse(null, $process->getOutput());
             } else {
                 return response()->json([
