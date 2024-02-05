@@ -57,7 +57,7 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->databaseNotifications()
-            ->databaseNotificationsPolling('5s')
+            ->databaseNotificationsPolling('10s')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

@@ -44,6 +44,7 @@ class DeploymentJob implements ShouldQueue
             'site_id' => $this->script->getSite()->id
         ]);
 
+        $this->sendPendingNotification();
     }
 
     /**
@@ -51,7 +52,6 @@ class DeploymentJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->sendPendingNotification();
 
         $this->process = $this->executeDeploymentProcess->handle($this->script);
 
