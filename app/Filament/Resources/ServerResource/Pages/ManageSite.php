@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 class ManageSite extends ViewRecord
 {
     protected static string $resource = ServerResource::class;
+
     protected static ?string $title = "Manage Site";
 
     public static function getNavigationIcon(): ?string
@@ -25,7 +26,7 @@ class ManageSite extends ViewRecord
     }
 
     public function getBreadcrumb() : string
-    {  
+    {
         return "Manage Site";
     }
 
@@ -34,14 +35,7 @@ class ManageSite extends ViewRecord
     {
         return $infolist
             ->schema([
-                Grid::make([
-                    'default' => 1,
-                    'sm' => 2,
-                    'md' => 3,
-                    'lg' => 4,
-                    'xl' => 6,
-                    '2xl' => 8,
-                ])
+                Grid::make()
             ]);
     }
 

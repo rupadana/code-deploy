@@ -30,4 +30,9 @@ class Server extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function deployments(): HasMany
+    {
+        return $this->hasMany(Deployment::class, 'server_id');
+    }
 }

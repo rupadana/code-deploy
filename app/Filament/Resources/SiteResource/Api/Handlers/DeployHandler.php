@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\SiteResource\Api\Handlers;
 
+use App\Jobs\Concerns\Abstracts\DeploymentProcess;
+use App\Jobs\DeploymentJob;
 use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\SiteResource;
@@ -19,7 +21,7 @@ class DeployHandler extends Handlers
         return Handlers::POST;
     }
 
-    public static function getModel()
+    public static function getModel() : ?string
     {
         return static::$resource::getModel();
     }
@@ -48,23 +50,12 @@ class DeployHandler extends Handlers
                 ->actAsSiteUser()
                 ->toSiteDirectory()
                 ->checkoutTo($request->after)
-                ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)))
-                ->execute();
+                ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 
+            // TODO : is it right to use job here?
+            DeploymentJob::dispatch($process, $server->owner, postDeploymentProcess: DeploymentProcess::make(['sha' => $request->after]));
 
-            if ($process->isSuccessful()) {
-
-                Cache::set('release', $request->after, 86400 * 30);
-
-                $record->current_sha = $request->after;
-                $record->save();
-
-                return static::sendSuccessResponse(null, $process->getOutput());
-            } else {
-                return response()->json([
-                    'message' => $process->getErrorOutput(),
-                ], 500);
-            }
+            return static::sendSuccessResponse(null, 'On Process');
         }
 
 

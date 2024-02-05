@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\ServerResource\RelationManagers;
 
+use App\Jobs\ChangeEnvironmentSite;
+use App\Jobs\DeploymentJob;
 use App\Models\Server;
 use App\Models\Site;
 use App\Services\DeployScript;
@@ -80,7 +82,6 @@ class SitesRelationManager extends RelationManager
                                                     ->gitPull()
                                                     ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
                                                 $process = $deployScript->execute();
-
 
 
                                                 $notification = Notification::make();
@@ -172,7 +173,6 @@ class SitesRelationManager extends RelationManager
                     ->columnSpanFull()
 
 
-
             ]);
     }
 
@@ -230,15 +230,17 @@ class SitesRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->after(function (array $data, Site $record) {
+                        // TODO : Use nested Deployment Process on this Process
                         if ($data['initialize']) {
                             try {
+
                                 $server = $record->server;
                                 $connectedAccount = $server->owner->connectedAccount;
                                 $token = $connectedAccount->token;
 
                                 $apiToken = auth()->user()->createToken('github', ['site:deploy'])->plainTextToken;
 
-                                $githubApi = GithubApi::make($token)
+                                GithubApi::make($token)
                                     ->repos($record->repository)
                                     ->hooks()
                                     ->post([
@@ -253,65 +255,51 @@ class SitesRelationManager extends RelationManager
                                         ]
                                     ]);
 
-
-                                $domain = $record->domain;
-                                // TODO : Use job to deploy
                                 $process = DeployScript::make()
-                                    ->domain($domain)
+                                    ->server($server)
+                                    ->site($record)
                                     ->repositoryUrl("https://$connectedAccount->nickname:$token@github.com/$record->repository.git");
 
                                 if ($data['initialize']) {
                                     $process = $process->initiate();
                                 }
 
-                                $postProcess = $process
-                                    ->server($server)
-                                    ->execute();
-
-                                file_put_contents(storage_path('private/error-post-process.log'), $postProcess->getErrorOutput());
+                                DeploymentJob::dispatch($process, auth()->user());
 
                                 $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
 
-                                DeployScript::make()
-                                    ->server($record->server)
-                                    ->domain($record->domain)
-                                    ->downloadEnv($path);
+                                DeploymentJob::dispatch(
+                                    DeployScript::make()
+                                        ->server($record->server)
+                                        ->site($record),
+                                    auth()->user(),
+                                    'downloadEnv',
+                                    [$path]
+                                );
+
+                                ChangeEnvironmentSite::dispatch($process, $path);
 
 
-                                $env = SitesRelationManager::changeEnvVariable(file_get_contents($path), 'DB_DATABASE', $process->getDatabaseName());
+                                DeploymentJob::dispatch(
+                                    DeployScript::make()
+                                        ->server($record->server)
+                                        ->site($record),
+                                    auth()->user(),
+                                    'uploadEnv',
+                                    [$path]
+                                );
 
-                                $env = SitesRelationManager::changeEnvVariable($env, 'DB_PASSWORD', $process->getDatabasePassword());
-                                $env = SitesRelationManager::changeEnvVariable($env, 'DB_USERNAME', $process->getSiteUser());
-
-                                file_put_contents($path, $env);
-                                $record->environment = $env;
-
-                                $record->save();
-
-                                DeployScript::make()
-                                    ->server($record->server)
-                                    ->domain($record->domain)
-                                    ->uploadEnv($path);
-
-
-                                if ($postProcess->isSuccessful()) {
                                     return Notification::make('notif-1')
-                                        ->title('Your site is now live!')
-                                        ->success()
+                                        ->title('Your site is on deployment process!')
+                                        ->body('Please wait for a few minutes')
+                                        ->info()
+                                        ->persistent()
                                         ->send();
-                                }
 
-                                return Notification::make('failed-notification')
-                                    ->danger()
-                                    ->title('Site deployment failed')
-                                    ->body($postProcess->getErrorOutput())
-                                    ->send();
                             } catch (\Exception $exception) {
-                                dd($exception);
                                 Notification::make('failed-notification')
                                     ->danger()
                                     ->title('Site deployment failed')
-                                    ->body($postProcess->getErrorOutput())
                                     ->send();
                             }
                         }
@@ -328,24 +316,16 @@ class SitesRelationManager extends RelationManager
                         $domain = $record->domain;
                         $server = $record->server;
 
-                        // TODO : Use job to deploy 
                         $process = DeployScript::make()
-                            ->domain($domain)
+                            ->site($record)
                             ->deleteSite()
-                            ->server($server)
-                            ->execute();
+                            ->server($server);
 
-                        if ($process->isSuccessful()) {
-                            return Notification::make('notif-1')
-                                ->title('Your site successfully delete')
-                                ->success()
-                                ->send();
-                        }
+                        DeploymentJob::dispatch($process, auth()->user());
 
-                        return Notification::make('failed-notification')
-                            ->danger()
-                            ->title('Site failed deleted')
-                            ->body($process->getErrorOutput())
+                        return Notification::make('notif-1')
+                            ->title('Your site is on delete process!')
+                            ->success()
                             ->send();
                     })
                     ->successNotification(null),

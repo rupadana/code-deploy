@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Jobs\Concerns\SetSiteSha;
+use App\Jobs\DeploymentJob;
 use App\Services\DeployScript;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Cache;
@@ -20,39 +22,21 @@ class CommitsTable extends Component
     public function deploy($sha)
     {
         $record = $this->record;
-        $server = $record->server;
-
-        // TODO : Use job 
-        $process = DeployScript::make()
-            ->server($server)
-            ->domain($record->domain)
+        
+        $script = DeployScript::make()
+            ->site($record)
             ->actAsSiteUser()
             ->toSiteDirectory()
             ->checkoutTo($sha)
-            ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)))
-            ->execute();
+            ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 
 
-        if ($process->isSuccessful()) {
+        DeploymentJob::dispatch($script, auth()->user(), postDeploymentProcess: SetSiteSha::make(['sha' => $sha]));
 
-            Cache::set('release', $sha, 86400 * 30);
-
-            $record->current_sha = $sha;
-            $record->save();
-
-            $this->dispatch('deploy-logs', 'out', $process->getOutput());
-
-            Notification::make('notification')
-                ->success()
-                ->title('Deployment successfully')
-                ->send();
-        } else {
-            $this->dispatch('deploy-logs', 'out', $process->getErrorOutput());
-
-            Notification::make('notification')
-                ->danger()
-                ->title('Deployment failed')
-                ->send();
-        }
+        Notification::make('notification')
+            ->info()
+            ->title('Your Deployment is in progress')
+            ->body('Please wait for a minute')
+            ->send();
     }
 }

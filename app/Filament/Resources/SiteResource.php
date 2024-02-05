@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SiteResource\Pages;
-use App\Filament\Resources\SiteResource\RelationManagers;
 use App\Models\Site;
 use Filament\Forms;
 use Filament\Forms\Components\Textarea;
@@ -27,7 +26,6 @@ class SiteResource extends Resource
     {
         return $form
             ->schema([
-                //
                 Textarea::class
             ]);
     }

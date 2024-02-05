@@ -31,6 +31,16 @@ Artisan::command('inspire', function () {
 
 Artisan::command('test', function () {
 
+//    $data = \App\Notifications\Notification::make('sd')
+//        ->icon('heroicon-o-arrow-path')
+//        ->actions([
+//        ])
+//        ->title('Deployment in progress')
+//        ->body('Site : app.codecrafters.id')
+//        ->deploymentId(uniqid())
+//        ->sendToDatabase(\App\Models\User::find(1));
+
+
     // $key = 'APP_DEBUG';
     // $value = 'Hello world';
 
@@ -42,23 +52,33 @@ Artisan::command('test', function () {
     // // $env = SitesRelationManager::changeEnvVariable($env, 'DB_USERNAME', $value);
     // dd($env);
 
-
     $server = Server::first();
-    // dd($server);
+//    // dd($server);
+//    $process = DeployScript::make()
+//        ->server($server)
+//        ->site(\App\Models\Site::find(41))
+//        ->script([
+//            'echo "Hello World"',
+//            'echo "Hello World 2"',
+//            'echo "Hello World 3"',
+//            'echo "Hello World 4"',
+//            'echo "Hello World 5"',
+//            'echo "Hello World 6"',
+//            'echo "Hello World 7"',
+//            'echo "Hello World"',
+//        ]);
+
+
+    $path = storage_path('private/.env.' . 'testkuiy' . '.' . 'sd');
+    // TODO : Use job to deploy
     $process = DeployScript::make()
         ->server($server)
-        ->domain('deploy.codecrafters.id')
-        ->script([
-            'echo "Hello World"',
-            'echo "Hello World 2"',
-            'echo "Hello World 3"',
-            'echo "Hello World 4"',
-            'echo "Hello World 5"',
-            'echo "Hello World 6"',
-            'echo "Hello World 7"',
-            'echo "Hello World"',
-        ])
-        ->execute();
+        ->site(\App\Models\Site::find(41))
+        ->script('echo "hello"');
+
+    \App\Jobs\DeploymentJob::dispatch($process, \App\Models\User::find(1));
+
+
     // ->execute();
     // dd($process->getScript());
     // DeployScript::make()

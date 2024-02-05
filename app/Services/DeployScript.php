@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Server;
+use App\Models\Site;
 use Exception;
 use Spatie\Ssh\Ssh;
 use Symfony\Component\Process\Process;
@@ -25,6 +26,8 @@ class DeployScript
 
     protected ?string $databasePassword = '';
 
+    protected ?Site $site = null;
+
 
     private function __construct()
     {
@@ -40,11 +43,11 @@ class DeployScript
 
     public function getSsh(): Ssh
     {
-        if (!$this->server) throw new Exception("Server login is empty");
+        if (!$this->getServer()) throw new Exception("Server login is empty");
 
-        $ssh_private_key_path = storage_path('private/' . $this->server->ssh_key_name);
+        $ssh_private_key_path = storage_path('private/' . $this->getServer()->ssh_key_name);
 
-        $ssh = Ssh::create($this->server->user, $this->server->host)
+        $ssh = Ssh::create($this->getServer()->user, $this->getServer()->host)
             ->disablePasswordAuthentication()
             ->disableStrictHostKeyChecking()
             ->enableQuietMode()
@@ -150,6 +153,7 @@ class DeployScript
      */
     public function getDomain(): ?string
     {
+        if($this->site) return $this->site->domain;
         return $this->domain;
     }
 
@@ -171,7 +175,7 @@ class DeployScript
     public function getSiteUser(): ?string
     {
         if (!$this->siteUser) {
-            return str($this->domain)->replace('.', '-')->toString();
+            return str($this->getDomain())->replace('.', '-')->toString();
         }
 
         return $this->siteUser;
@@ -229,6 +233,8 @@ class DeployScript
      */
     public function getServer(): ?Server
     {
+        if($this->site && $this->server == null) return $this->site->server;
+        
         return $this->server;
     }
 
@@ -300,4 +306,17 @@ class DeployScript
 
         return $this;
     }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function site(?Site $site): DeployScript
+    {
+        $this->site = $site;
+        return $this;
+    }
+
+
 }
