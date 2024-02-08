@@ -119,11 +119,6 @@ class SitesRelationManager extends RelationManager
                                     ])
                                     ->columnSpanFull()
                             ]),
-                        // Tab::make('Commits')
-                        //     ->schema([
-                        //         ,
-                        //     ])
-                        //     ->hiddenOn('create'),
                         Tab::make('Environment')
                             ->schema([
                                 Section::make('.env')
@@ -205,6 +200,8 @@ class SitesRelationManager extends RelationManager
         $user = ConnectedAccount::query()->where('user_id', auth()->user()->id)->first();
 
         return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
+            // TODO: Get repository from organization too
+            
             $data = GithubApi::make($user->token)
                 ->user()
                 ->repos()
