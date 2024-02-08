@@ -7,6 +7,7 @@ use App\Jobs\DeploymentJob;
 use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\SiteResource;
+use App\Jobs\Concerns\SetSiteSha;
 use App\Services\DeployScript;
 use Illuminate\Support\Facades\Cache;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -53,7 +54,7 @@ class DeployHandler extends Handlers
                 ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 
             // TODO : is it right to use job here?
-            DeploymentJob::dispatch($process, $server->owner, postDeploymentProcess: DeploymentProcess::make(['sha' => $request->after]));
+            DeploymentJob::dispatch($process, $server->owner, postDeploymentProcess: SetSiteSha::make(['sha' => $request->after]));
 
             return static::sendSuccessResponse(null, 'On Process');
         }
