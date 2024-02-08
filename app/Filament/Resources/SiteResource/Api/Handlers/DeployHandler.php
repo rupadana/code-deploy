@@ -47,7 +47,7 @@ class DeployHandler extends Handlers
 
             $process = DeployScript::make()
                 ->server($server)
-                ->domain($record->domain)
+                ->site($record)
                 ->actAsSiteUser()
                 ->toSiteDirectory()
                 ->checkoutTo($request->after)
