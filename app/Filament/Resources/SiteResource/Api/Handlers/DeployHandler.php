@@ -54,6 +54,7 @@ class DeployHandler extends Handlers
                 ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 
             // TODO : is it right to use job here?
+            
             DeploymentJob::dispatch($process, $server->owner, postDeploymentProcess: SetSiteSha::make(['sha' => $request->after]));
 
             return static::sendSuccessResponse(null, 'On Process');
