@@ -7,12 +7,15 @@ use App\Filament\Resources\ServerResource\RelationManagers\SitesRelationManager;
 use Filament\Actions;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Infolist;
+use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Resources\Pages\ViewRecord;
 
-class DeploymentLogs extends ViewRecord
+class DeploymentLogs extends ManageRelatedRecords
 {
     protected static string $resource = ServerResource::class;
 
+    protected static string $relationship = 'deployments';
+    
     protected static ?string $title = "Deployment Logs";
 
     public static function getNavigationIcon(): ?string
@@ -23,14 +26,6 @@ class DeploymentLogs extends ViewRecord
     public function getBreadcrumb() : string
     {
         return "Deployment Logs";
-    }
-
-    public function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                Grid::make()
-            ]);
     }
 
     public function getRelationManagers(): array

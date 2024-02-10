@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3b8496de2a7e003eeadb31f5341d7ae",
+    "content-hash": "bbe85292c69bf30225d0473e87c48276",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4495,6 +4495,75 @@
                 }
             ],
             "time": "2023-12-12T09:07:03+00:00"
+        },
+        {
+            "name": "parallax/filament-syntax-entry",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/parallax/filament-syntax-entry.git",
+                "reference": "2f7ec5e3b66924e7c08debf4d401a7fcaddea653"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/parallax/filament-syntax-entry/zipball/2f7ec5e3b66924e7c08debf4d401a7fcaddea653",
+                "reference": "2f7ec5e3b66924e7c08debf4d401a7fcaddea653",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "illuminate/contracts": "^10.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.0",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Parallax\\FilamentSyntaxEntry\\FilamentSyntaxEntryServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentSyntaxEntry": "Parallax\\FilamentSyntaxEntry\\Facades\\FilamentSyntaxEntry"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Parallax\\FilamentSyntaxEntry\\": "src/",
+                    "Parallax\\FilamentSyntaxEntry\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Parallax",
+                    "email": "luke@parall.ax",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Add a Filament infolist entry for themeable syntax highlighting.",
+            "homepage": "https://github.com/parallax/filament-syntax-entry",
+            "keywords": [
+                "filament-syntax-entry",
+                "laravel",
+                "parallax"
+            ],
+            "support": {
+                "issues": "https://github.com/parallax/filament-syntax-entry/issues",
+                "source": "https://github.com/parallax/filament-syntax-entry"
+            },
+            "time": "2024-02-02T13:09:00+00:00"
         },
         {
             "name": "phpoption/phpoption",

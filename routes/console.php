@@ -74,9 +74,14 @@ Artisan::command('test', function () {
     $process = DeployScript::make()
         ->server($server)
         ->site(\App\Models\Site::find(41))
-        ->script('echo "hello"');
+        ->getTemplates();
 
-    \App\Jobs\DeploymentJob::dispatch($process, \App\Models\User::find(1));
+        dd($process);
+
+
+
+    
+    // \App\Jobs\DeploymentJob::dispatch($process, \App\Models\User::find(1));
 
 
     // ->execute();

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ServerResource\RelationManagers;
 
 use App\Jobs\ChangeEnvironmentSite;
+use App\Jobs\Concerns\SynchronizeEnvironment;
 use App\Jobs\DeploymentJob;
 use App\Models\Server;
 use App\Models\Site;
@@ -53,7 +54,17 @@ class SitesRelationManager extends RelationManager
 
                                 Checkbox::make('initialize')
                                     ->hiddenOn('edit')
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->live(),
+
+                                Select::make('template')
+                                    ->options($this->getTemplates())
+                                    ->searchable()
+                                    ->hidden(function(Get $get) {
+                                        return !$get('initialize');
+                                    })
+
+
 
                             ])
                             ->columns(),
@@ -184,8 +195,7 @@ class SitesRelationManager extends RelationManager
     protected function getCommits()
     {
         if (!$this->cachedMountedTableActionRecord) return collect([]);
-        $user = ConnectedAccount::query()->where('user_id', auth()->user()->id)->first();
-
+        $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
 
         $data = GithubApi::make($user->token)
             ->repos($this->cachedMountedTableActionRecord->repository)
@@ -195,13 +205,21 @@ class SitesRelationManager extends RelationManager
         return $data;
     }
 
+    protected function getTemplates(): array
+    {
+        return DeployScript::make($this->getOwnerRecord())
+            ->getTemplates()
+            ->pluck('name', 'name')
+            ->toArray();
+    }
+
     protected function getRepositories()
     {
-        $user = ConnectedAccount::query()->where('user_id', auth()->user()->id)->first();
+        $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
 
         return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too
-            
+
             $data = GithubApi::make($user->token)
                 ->user()
                 ->repos()
@@ -258,7 +276,7 @@ class SitesRelationManager extends RelationManager
                                     ->repositoryUrl("https://$connectedAccount->nickname:$token@github.com/$record->repository.git");
 
                                 if ($data['initialize']) {
-                                    $process = $process->initiate();
+                                    $process = $process->initiate($data['template']);
                                 }
 
                                 DeploymentJob::dispatch($process, auth()->user());
@@ -270,30 +288,19 @@ class SitesRelationManager extends RelationManager
                                         ->server($record->server)
                                         ->site($record),
                                     auth()->user(),
-                                    'downloadEnv',
-                                    [$path]
+                                    execute: SynchronizeEnvironment::make([
+                                        'path' => $path
+                                    ])
                                 );
 
-                                ChangeEnvironmentSite::dispatch($process, $path);
-
-
-                                DeploymentJob::dispatch(
-                                    DeployScript::make()
-                                        ->server($record->server)
-                                        ->site($record),
-                                    auth()->user(),
-                                    'uploadEnv',
-                                    [$path]
-                                );
-
-                                    return Notification::make('notif-1')
-                                        ->title('Your site is on deployment process!')
-                                        ->body('Please wait for a few minutes')
-                                        ->info()
-                                        ->persistent()
-                                        ->send();
-
+                                return Notification::make('notif-1')
+                                    ->title('Your site is on deployment process!')
+                                    ->body('Please wait for a few minutes')
+                                    ->info()
+                                    ->persistent()
+                                    ->send();
                             } catch (\Exception $exception) {
+                                dd($exception);
                                 Notification::make('failed-notification')
                                     ->danger()
                                     ->title('Site deployment failed')

@@ -31,7 +31,7 @@ class CommitsTable extends Component
             ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 
 
-        DeploymentJob::dispatch($script, auth()->user(), postDeploymentProcess: SetSiteSha::make(['sha' => $sha]));
+        DeploymentJob::dispatch($script, auth()->user(), finish: SetSiteSha::make(['sha' => $sha]));
 
         Notification::make('notification')
             ->info()

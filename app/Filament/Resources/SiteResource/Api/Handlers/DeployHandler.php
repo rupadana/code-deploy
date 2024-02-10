@@ -55,7 +55,7 @@ class DeployHandler extends Handlers
 
             // TODO : is it right to use job here?
             
-            DeploymentJob::dispatch($process, $server->owner, postDeploymentProcess: SetSiteSha::make(['sha' => $request->after]));
+            DeploymentJob::dispatch($process, $server->owner, finish: SetSiteSha::make(['sha' => $request->after]));
 
             return static::sendSuccessResponse(null, 'On Process');
         }

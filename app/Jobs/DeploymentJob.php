@@ -31,12 +31,12 @@ class DeploymentJob implements ShouldQueue
     public function __construct(
         protected DeployScript           $script,
         protected User                   $user,
-        protected ?ExecuteDeploymentProcess $executeDeploymentProcess = null,
-        protected ?DeploymentProcess $postDeploymentProcess = null,
+        protected ?ExecuteDeploymentProcess $execute = null,
+        protected ?DeploymentProcess $finish = null,
     )
     {
-        if($this->executeDeploymentProcess === null) {
-            $this->executeDeploymentProcess = DefaultExecuteDeploymentProcess::make();
+        if($this->execute === null) {
+            $this->execute = DefaultExecuteDeploymentProcess::make();
         }
 
         $this->deployment = Deployment::create([
@@ -52,9 +52,8 @@ class DeploymentJob implements ShouldQueue
      */
     public function handle(): void
     {
-
-        $this->process = $this->executeDeploymentProcess->handle($this->script);
-
+        $this->process = $this->execute->handle($this->script);
+        
         $this->deletePendingNotification();
 
         if ($this->process->isSuccessful()) {
@@ -71,8 +70,8 @@ class DeploymentJob implements ShouldQueue
             $this->sendErrorNotification();
         }
 
-        if($this->postDeploymentProcess) {
-            $this->postDeploymentProcess->handle($this->script);
+        if($this->finish) {
+            $this->finish->handle($this->script);
         }
 
     }

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Server;
 use App\Models\Site;
 use Exception;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Ssh\Ssh;
 use Symfony\Component\Process\Process;
 
@@ -39,6 +41,43 @@ class DeployScript
         $instance = new static;
 
         return $instance->server($server);
+    }
+
+    public function templates()
+    {
+        return $this->script('clpctl vhost-templates:list');
+    }
+
+    public function getTemplates(): Collection
+    {
+        return Cache::remember('deployment-templates-'. $this->getServer()->id, 86400 * 30, function () {
+            $process = $this->templates()
+                ->execute();
+
+            $lines = explode("\n", $process->getOutput());
+
+            // Remove empty lines
+            $lines = array_filter(array_map('trim', $lines));
+
+            // Initialize the array to store the data
+            $data_array = [];
+
+            // Process each line and split by pipe character to create the array
+            foreach ($lines as $line) {
+                $data_array[] = array_map('trim', explode('|', $line));
+            }
+
+            // Remove header and footer
+            $data_array = array_slice($data_array, 3, -1);
+
+            return collect($data_array)->map(function (array $data) {
+                return [
+                    'name' => $data[1],
+                    'root_directory' => $data[2],
+                    'type' => $data[3]
+                ];
+            });
+        });
     }
 
     public function getSsh(): Ssh
@@ -82,7 +121,7 @@ class DeployScript
         return $this;
     }
 
-    public function initiate(): static
+    public function initiate(string $template = 'Laravel 10'): static
     {
         $domain = $this->getDomain();
         $siteUser = $this->getSiteUser();
@@ -100,7 +139,7 @@ class DeployScript
         $databaseName = $this->getDatabaseName();
 
         $this->script([
-            "clpctl site:add:php --domainName=$domain --phpVersion=8.2 --vhostTemplate='Laravel 10' --siteUser=$siteUser --siteUserPassword='!secretPassword!'",
+            "clpctl site:add:php --domainName=$domain --phpVersion=8.2 --vhostTemplate='$template' --siteUser=$siteUser --siteUserPassword='$databasePassword'",
             "clpctl db:add --domainName=$domain --databaseName=$databaseName --databaseUserName=$siteUser --databaseUserPassword='$databasePassword'",
             "rm -rf /home/$siteUser/htdocs/$domain",
             "su $siteUser",
@@ -153,7 +192,7 @@ class DeployScript
      */
     public function getDomain(): ?string
     {
-        if($this->site) return $this->site->domain;
+        if ($this->site) return $this->site->domain;
         return $this->domain;
     }
 
@@ -233,8 +272,8 @@ class DeployScript
      */
     public function getServer(): ?Server
     {
-        if($this->site && $this->server == null) return $this->site->server;
-        
+        if ($this->site && $this->server == null) return $this->site->server;
+
         return $this->server;
     }
 
@@ -317,6 +356,4 @@ class DeployScript
         $this->site = $site;
         return $this;
     }
-
-
 }

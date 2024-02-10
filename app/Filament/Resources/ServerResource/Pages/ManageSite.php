@@ -11,12 +11,16 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
+use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Storage;
 
-class ManageSite extends ViewRecord
+class ManageSite extends ManageRelatedRecords
 {
+
     protected static string $resource = ServerResource::class;
+
+    protected static string $relationship = 'sites';
 
     protected static ?string $title = "Manage Site";
 
@@ -28,15 +32,6 @@ class ManageSite extends ViewRecord
     public function getBreadcrumb() : string
     {
         return "Manage Site";
-    }
-
-
-    public function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                Grid::make()
-            ]);
     }
 
     public function getRelationManagers(): array
