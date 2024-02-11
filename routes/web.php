@@ -1,6 +1,6 @@
 <?php
 
-use App\Livewire\HelloWorld;
+use App\Livewire\LandingPage;
 use App\Livewire\LoginPage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
@@ -17,11 +17,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => ['web']], function () {
-    
-    Route::get('/hello', HelloWorld::class);
+
 
 });
 
 
 
-Route::get('/', LoginPage::class);
+Route::get('/', LandingPage::class);
