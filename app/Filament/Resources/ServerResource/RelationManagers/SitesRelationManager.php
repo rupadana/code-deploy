@@ -289,7 +289,7 @@ class SitesRelationManager extends RelationManager
                                 Notification::make('failed-notification')
                                     ->danger()
                                     ->title('Site deployment failed')
-                                 $data = GithubApi::make($user->token)   ->send();
+                                    ->send();
                             }
                         }
                     })
