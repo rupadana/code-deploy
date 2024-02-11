@@ -23,8 +23,9 @@
             </div>
 
             <p class="mt-8 text-gray-600 dark:text-gray-300">
-                CodeDeploy is an Opensource Project. Stay tuned for public repository!
+                CodeDeploy is an Opensource Project. <a style="color:blue" href="mailto:rupadanawayan@gmail.com">Contact me</a> if you want to contribute. Stay tuned for public repository!
             </p>
+            
             <div class="overflow-hidden w-full lg:w-7/12 lg:-mr-16">
                 <img src="{{ url('images/deploy-illustration.svg') }}" alt="project illustration" height=""
                     width="">

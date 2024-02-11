@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ServerResource extends Resource
 {
@@ -66,7 +67,14 @@ class ServerResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function(Builder $query) {
+                if(auth()->user()->hasRole(['super_admin'])) {
+                    return $query;
+                }
+                
+                return $query->where('created_by', '12');
+            });
     }
 
     public static function getRelations(): array
