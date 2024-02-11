@@ -1,4 +1,4 @@
-import preset from './vendor/filament/support/tailwind.config.preset'
+import preset from './tailwind.config.preset'
 
 export default {
     presets: [preset],
@@ -9,3 +9,4 @@ export default {
         './vendor/filament/**/*.blade.php',
     ],
 }
+
