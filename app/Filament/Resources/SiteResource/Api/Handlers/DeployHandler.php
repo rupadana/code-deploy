@@ -2,27 +2,26 @@
 
 namespace App\Filament\Resources\SiteResource\Api\Handlers;
 
-use App\Jobs\Concerns\Abstracts\DeploymentProcess;
-use App\Jobs\DeploymentJob;
-use Illuminate\Http\Request;
-use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\SiteResource;
 use App\Jobs\Concerns\SetSiteSha;
+use App\Jobs\DeploymentJob;
 use App\Services\DeployScript;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Request;
+use Rupadana\ApiService\Http\Handlers;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class DeployHandler extends Handlers
 {
-    public static string | null $uri = '/{id}/deploy';
-    public static string | null $resource = SiteResource::class;
+    public static ?string $uri = '/{id}/deploy';
+
+    public static ?string $resource = SiteResource::class;
 
     public static function getMethod()
     {
         return Handlers::POST;
     }
 
-    public static function getModel() : ?string
+    public static function getModel(): ?string
     {
         return static::$resource::getModel();
     }
@@ -40,7 +39,9 @@ class DeployHandler extends Handlers
         )
             ->first();
 
-        if (!$record) return static::sendNotFoundResponse();
+        if (! $record) {
+            return static::sendNotFoundResponse();
+        }
 
         if ($request->header('X-GitHub-Event') == 'push') {
             $server = $record->server;
@@ -54,16 +55,14 @@ class DeployHandler extends Handlers
                 ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 
             // TODO : is it right to use job here?
-            
+
             DeploymentJob::dispatch($process, $server->owner, finish: SetSiteSha::make(['sha' => $request->after]));
 
             return static::sendSuccessResponse(null, 'On Process');
         }
 
-
-
         return response()->json([
-            'message' => 'Event listener not ready'
+            'message' => 'Event listener not ready',
         ], 401);
     }
 }

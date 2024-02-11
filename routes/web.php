@@ -1,13 +1,8 @@
 <?php
 
 use App\Livewire\HelloWorld;
-use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\GithubProvider;
-use Laravel\Socialite\Two\User;
-use Rupadana\GithubApi\GithubApi;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,12 +15,9 @@ use Rupadana\GithubApi\GithubApi;
 |
 */
 
-
-
-
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', function () {
-        return "Release : " . Cache::get('release');
+        return 'Release : '.Cache::get('release');
     });
     Route::get('/hello', HelloWorld::class);
 

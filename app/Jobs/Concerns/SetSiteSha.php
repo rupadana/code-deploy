@@ -8,7 +8,6 @@ use App\Services\DeployScript;
 
 class SetSiteSha extends DeploymentProcess
 {
-
     public function handle(DeployScript $script): void
     {
         $record = Site::find($script->getSite()->id);

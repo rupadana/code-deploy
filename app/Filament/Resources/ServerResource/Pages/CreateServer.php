@@ -3,14 +3,13 @@
 namespace App\Filament\Resources\ServerResource\Pages;
 
 use App\Filament\Resources\ServerResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Storage;
 
 class CreateServer extends CreateRecord
 {
     protected static string $resource = ServerResource::class;
-    
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $ssh_key_name = str()->uuid()->toString();
@@ -23,12 +22,12 @@ class CreateServer extends CreateRecord
         $publicKey = $keys['publickey'];
         $privateKey = $keys['privatekey'];
 
-        Storage::disk('private')->put( $ssh_key_name, $privateKey);
-        Storage::disk('private')->put( $ssh_key_name . '.pub', $publicKey);
+        Storage::disk('private')->put($ssh_key_name, $privateKey);
+        Storage::disk('private')->put($ssh_key_name.'.pub', $publicKey);
 
-        $path = storage_path('private/' . $ssh_key_name);
-        
-        exec('chmod 600 ' . $path);
+        $path = storage_path('private/'.$ssh_key_name);
+
+        exec('chmod 600 '.$path);
 
         $data['ssh_key_name'] = $ssh_key_name;
         $data['created_by'] = auth()->user()->id;

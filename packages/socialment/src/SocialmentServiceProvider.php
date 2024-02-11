@@ -58,7 +58,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton(Socialment::class, fn() => new Socialment);
+        $this->app->singleton(Socialment::class, fn () => new Socialment());
     }
 
     public function packageBooted(): void
@@ -70,7 +70,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
             Route::middleware('web')
                 ->prefix($prefix)
                 ->as($namePrefix)
-                ->group(__DIR__ . '/../routes/spa.php');
+                ->group(__DIR__.'/../routes/spa.php');
 
             // Now add this to the cors paths
             config([
@@ -101,7 +101,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/socialment/{$file->getFilename()}"),
                 ], 'socialment-stubs');

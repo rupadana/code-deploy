@@ -18,30 +18,31 @@ use Symfony\Component\Process\Process;
 
 class DeploymentJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected ?Deployment $deployment;
 
     protected Process $process;
 
-
     /**
      * Create a new job instance.
      */
     public function __construct(
-        protected DeployScript           $script,
-        protected User                   $user,
+        protected DeployScript $script,
+        protected User $user,
         protected ?ExecuteDeploymentProcess $execute = null,
         protected ?DeploymentProcess $finish = null,
-    )
-    {
-        if($this->execute === null) {
+    ) {
+        if ($this->execute === null) {
             $this->execute = DefaultExecuteDeploymentProcess::make();
         }
 
         $this->deployment = Deployment::create([
             'server_id' => $this->script->getServer()->id,
-            'site_id' => $this->script->getSite()->id
+            'site_id' => $this->script->getSite()->id,
         ]);
 
         $this->sendPendingNotification();
@@ -53,7 +54,7 @@ class DeploymentJob implements ShouldQueue
     public function handle(): void
     {
         $this->process = $this->execute->handle($this->script);
-        
+
         $this->deletePendingNotification();
 
         if ($this->process->isSuccessful()) {
@@ -70,7 +71,7 @@ class DeploymentJob implements ShouldQueue
             $this->sendErrorNotification();
         }
 
-        if($this->finish) {
+        if ($this->finish) {
             $this->finish->handle($this->script);
         }
 
@@ -82,7 +83,7 @@ class DeploymentJob implements ShouldQueue
             ->icon('heroicon-o-arrow-path')
             ->title('Deployment in progress')
             ->duration('1m')
-            ->body('Site :  ' . $this->script->getDomain())
+            ->body('Site :  '.$this->script->getDomain())
             ->deploymentId($this->deployment->id)
             ->sendToDatabase($this->user);
     }
@@ -100,7 +101,7 @@ class DeploymentJob implements ShouldQueue
         Notification::make()
             ->success()
             ->title('Deployment successfully')
-            ->body('Site : ' . $this->script->getDomain())
+            ->body('Site : '.$this->script->getDomain())
             ->deploymentId($this->deployment->id)
             ->sendToDatabase($this->user);
     }
@@ -110,7 +111,7 @@ class DeploymentJob implements ShouldQueue
         Notification::make()
             ->danger()
             ->title('Deployment failed')
-            ->body('Site : ' . $this->script->getDomain())
+            ->body('Site : '.$this->script->getDomain())
             ->deploymentId($this->deployment->id)
             ->sendToDatabase($this->user);
     }

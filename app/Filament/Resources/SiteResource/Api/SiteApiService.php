@@ -1,16 +1,15 @@
 <?php
+
 namespace App\Filament\Resources\SiteResource\Api;
 
-use Rupadana\ApiService\ApiService;
 use App\Filament\Resources\SiteResource;
-use Illuminate\Routing\Router;
-
+use Rupadana\ApiService\ApiService;
 
 class SiteApiService extends ApiService
 {
-    protected static string | null $resource = SiteResource::class;
+    protected static ?string $resource = SiteResource::class;
 
-    public static function handlers() : array
+    public static function handlers(): array
     {
         return [
             Handlers\CreateHandler::class,
@@ -18,8 +17,8 @@ class SiteApiService extends ApiService
             Handlers\DeleteHandler::class,
             Handlers\PaginationHandler::class,
             Handlers\DetailHandler::class,
-            Handlers\DeployHandler::class
+            Handlers\DeployHandler::class,
         ];
-        
+
     }
 }

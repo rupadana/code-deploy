@@ -17,6 +17,7 @@
         "laravel/pulse": "^1.0@beta",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "nunomaduro/phpinsights": "^2.11",
         "parallax/filament-syntax-entry": "^1.0",
         "phpseclib/phpseclib": "~2.0",
         "rupadana/filament-announce": "^3.1",
@@ -75,7 +76,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "dealerdirect/phpcodesniffer-composer-installer": false
         }
     },
     "minimum-stability": "dev",

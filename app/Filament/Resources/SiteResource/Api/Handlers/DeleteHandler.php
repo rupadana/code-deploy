@@ -1,20 +1,24 @@
 <?php
+
 namespace App\Filament\Resources\SiteResource\Api\Handlers;
 
+use App\Filament\Resources\SiteResource;
 use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
-use App\Filament\Resources\SiteResource;
 
-class DeleteHandler extends Handlers {
-    public static string | null $uri = '/{id}';
-    public static string | null $resource = SiteResource::class;
+class DeleteHandler extends Handlers
+{
+    public static ?string $uri = '/{id}';
+
+    public static ?string $resource = SiteResource::class;
 
     public static function getMethod()
     {
         return Handlers::DELETE;
     }
 
-    public static function getModel() {
+    public static function getModel()
+    {
         return static::$resource::getModel();
     }
 
@@ -22,10 +26,12 @@ class DeleteHandler extends Handlers {
     {
         $model = static::getModel()::find($id);
 
-        if (!$model) return static::sendNotFoundResponse();
+        if (! $model) {
+            return static::sendNotFoundResponse();
+        }
 
         $model->delete();
 
-        return static::sendSuccessResponse($model, "Successfully Delete Resource");
+        return static::sendSuccessResponse($model, 'Successfully Delete Resource');
     }
 }

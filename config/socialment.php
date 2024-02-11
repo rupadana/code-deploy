@@ -8,9 +8,9 @@ return [
     'providers' => [
         // Use the key based on the provider's documentation
         'github' => [
-        	'icon' => 'fab-github', // Font Awesome icon class
-        	'label' => 'Github', // The label to display for the provider
-        ]
+            'icon' => 'fab-github', // Font Awesome icon class
+            'label' => 'Github', // The label to display for the provider
+        ],
     ],
 
     'view' => [

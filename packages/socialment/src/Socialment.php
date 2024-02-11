@@ -16,7 +16,7 @@ class Socialment
         $this->providers[$provider] = [
             'icon' => $icon,
             'label' => $label,
-            'scopes' => $scopes
+            'scopes' => $scopes,
         ];
 
         return $this;

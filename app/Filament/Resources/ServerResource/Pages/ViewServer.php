@@ -10,17 +10,13 @@ use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Colors\Color;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 use Parallax\FilamentSyntaxEntry\SyntaxEntry;
-use Spatie\Ssh\Ssh;
-use Symfony\Component\Process\Process;
 
 class ViewServer extends ViewRecord
 {
@@ -46,13 +42,12 @@ class ViewServer extends ViewRecord
                             ->send();
                     }
 
-
                     return Notification::make('failed-notification')
                         ->danger()
                         ->title('Connection failed')
                         ->body($process->getErrorOutput())
                         ->send();
-                })
+                }),
         ];
     }
 
@@ -66,8 +61,7 @@ class ViewServer extends ViewRecord
         $record = $this->getRecord();
         $data = $record->toArray();
 
-
-        $pub = Storage::disk('private')->get($record->ssh_key_name . '.pub');
+        $pub = Storage::disk('private')->get($record->ssh_key_name.'.pub');
 
         $data['ssh_pub'] = $pub;
         $data['installation_bash'] = 'curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \ echo "85762db0edc00ce19a2cd5496d1627903e6198ad850bbbdefb2ceaa46bd20cbd install.sh" | \ sha256sum -c && sudo DB_ENGINE=MARIADB_10.11 bash install.sh';
@@ -83,7 +77,7 @@ class ViewServer extends ViewRecord
                         SyntaxEntry::make('installation_bash')
                             ->label('Installation Script')
                             ->language('bash')
-                            ->helperText('This script only for Ubuntu 22.04 with MariaDB 10.11')
+                            ->helperText('This script only for Ubuntu 22.04 with MariaDB 10.11'),
                     ])
                     ->columnSpanFull(),
                 Section::make('SSH Key')

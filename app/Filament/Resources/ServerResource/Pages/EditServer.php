@@ -10,7 +10,6 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Colors\Color;
-use Spatie\Ssh\Ssh;
 
 class EditServer extends EditRecord
 {
@@ -35,13 +34,12 @@ class EditServer extends EditRecord
                             ->send();
                     }
 
-
                     return Notification::make('failed-notification')
                         ->danger()
                         ->title('Connection failed')
                         ->body($process->getErrorOutput())
                         ->send();
-                })
+                }),
         ];
     }
 }

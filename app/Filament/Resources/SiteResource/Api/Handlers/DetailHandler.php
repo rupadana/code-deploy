@@ -2,16 +2,15 @@
 
 namespace App\Filament\Resources\SiteResource\Api\Handlers;
 
-use App\Filament\Resources\SettingResource;
 use App\Filament\Resources\SiteResource;
 use Rupadana\ApiService\Http\Handlers;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class DetailHandler extends Handlers
 {
-    public static string | null $uri = '/{id}';
-    public static string | null $resource = SiteResource::class;
+    public static ?string $uri = '/{id}';
 
+    public static ?string $resource = SiteResource::class;
 
     public function handler($id)
     {
@@ -22,10 +21,12 @@ class DetailHandler extends Handlers
         )
             ->first();
 
-        if (!$query) return static::sendNotFoundResponse();
+        if (! $query) {
+            return static::sendNotFoundResponse();
+        }
 
         $transformer = static::getApiTransformer();
-        
+
         return new $transformer($query);
     }
 }

@@ -7,8 +7,6 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DeploymentsRelationManager extends RelationManager
 {
@@ -24,7 +22,7 @@ class DeploymentsRelationManager extends RelationManager
                     ->maxLength(255),
                 Forms\Components\Textarea::make('log')
                     ->columnSpanFull()
-                    ->rows(15)
+                    ->rows(15),
             ]);
     }
 
@@ -36,17 +34,17 @@ class DeploymentsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('site.domain'),
                 Tables\Columns\TextColumn::make('status')
                     ->badge(),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('created_at'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-//                Tables\Actions\CreateAction::make(),
+                //                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ViewAction::make()
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

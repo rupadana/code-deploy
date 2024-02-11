@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 class Notification extends \Filament\Notifications\Notification
 {
-
     protected ?string $deploymentId = null;
 
     public function getDeploymentId(): ?string
@@ -15,6 +14,7 @@ class Notification extends \Filament\Notifications\Notification
     public function deploymentId(?string $deploymentId): Notification
     {
         $this->deploymentId = $deploymentId;
+
         return $this;
     }
 

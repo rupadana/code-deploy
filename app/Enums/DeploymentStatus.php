@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Enums;
-enum DeploymentStatus: string implements  \Filament\Support\Contracts\HasColor {
+
+enum DeploymentStatus: string implements \Filament\Support\Contracts\HasColor
+{
     case PENDING = 'pending';
     case RUNNING = 'running';
     case FAILURE = 'failure';

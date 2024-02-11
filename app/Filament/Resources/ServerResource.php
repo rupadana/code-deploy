@@ -2,12 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ServerResource\Actions\ViewPublicKey;
 use App\Filament\Resources\ServerResource\Pages;
-use App\Filament\Resources\ServerResource\RelationManagers;
-use App\Filament\Resources\ServerResource\RelationManagers\SitesRelationManager;
 use App\Models\Server;
-use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
@@ -16,8 +12,6 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ServerResource extends Resource
 {
@@ -29,13 +23,13 @@ class ServerResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make("name")
+                TextInput::make('name')
                     ->required(),
-                TextInput::make("user")
+                TextInput::make('user')
                     ->required(),
-                TextInput::make("host")
+                TextInput::make('host')
                     ->required(),
-                TextInput::make("ssh_port")
+                TextInput::make('ssh_port')
                     ->label('SSH Port')
                     ->default(22)
                     ->required(),
@@ -46,13 +40,13 @@ class ServerResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make("name")
+                TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make("user")
+                TextColumn::make('user')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make("host")
+                TextColumn::make('host')
                     ->searchable()
                     ->sortable(),
             ])
@@ -98,7 +92,7 @@ class ServerResource extends Resource
             Pages\EditServer::class,
             Pages\ViewServer::class,
             Pages\ManageSite::class,
-            Pages\DeploymentLogs::class
+            Pages\DeploymentLogs::class,
         ]);
     }
 }

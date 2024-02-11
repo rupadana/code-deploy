@@ -11,7 +11,8 @@ class HelloWorld extends Component
         return view('livewire.hello-world');
     }
 
-    public function fetch() {
+    public function fetch()
+    {
         $this->dispatch('hello', 'hello', 'sd');
     }
 }

@@ -30,7 +30,6 @@ class DeployScript
 
     protected ?Site $site = null;
 
-
     private function __construct()
     {
         $this->databasePassword = uniqid();
@@ -38,7 +37,7 @@ class DeployScript
 
     public static function make(?Server $server = null): self
     {
-        $instance = new static;
+        $instance = new static();
 
         return $instance->server($server);
     }
@@ -50,7 +49,7 @@ class DeployScript
 
     public function getTemplates(): Collection
     {
-        return Cache::remember('deployment-templates-'. $this->getServer()->id, 86400 * 30, function () {
+        return Cache::remember('deployment-templates-'.$this->getServer()->id, 86400 * 30, function () {
             $process = $this->templates()
                 ->execute();
 
@@ -74,7 +73,7 @@ class DeployScript
                 return [
                     'name' => $data[1],
                     'root_directory' => $data[2],
-                    'type' => $data[3]
+                    'type' => $data[3],
                 ];
             });
         });
@@ -82,17 +81,17 @@ class DeployScript
 
     public function getSsh(): Ssh
     {
-        if (!$this->getServer()) throw new Exception("Server login is empty");
+        if (! $this->getServer()) {
+            throw new Exception('Server login is empty');
+        }
 
-        $ssh_private_key_path = storage_path('private/' . $this->getServer()->ssh_key_name);
+        $ssh_private_key_path = storage_path('private/'.$this->getServer()->ssh_key_name);
 
-        $ssh = Ssh::create($this->getServer()->user, $this->getServer()->host)
+        return Ssh::create($this->getServer()->user, $this->getServer()->host)
             ->disablePasswordAuthentication()
             ->disableStrictHostKeyChecking()
             ->enableQuietMode()
             ->usePrivateKey($ssh_private_key_path);
-
-        return $ssh;
     }
 
     public function execute(): Process
@@ -112,7 +111,7 @@ class DeployScript
     /**
      * Set the value of laravel
      *
-     * @return  self
+     * @return self
      */
     public function laravel(bool $condition = true): static
     {
@@ -127,11 +126,15 @@ class DeployScript
         $siteUser = $this->getSiteUser();
         $repositoryUrl = $this->getRepositoryUrl();
 
-        if (!$domain) throw new Exception("Invalid domain : $domain");
+        if (! $domain) {
+            throw new Exception("Invalid domain : $domain");
+        }
 
-        if (!$repositoryUrl) throw new Exception("Invalid repository url : $repositoryUrl");
+        if (! $repositoryUrl) {
+            throw new Exception("Invalid repository url : $repositoryUrl");
+        }
 
-        if (!$siteUser) {
+        if (! $siteUser) {
             $siteUser = str($domain)->replace('.', '-')->toString();
         }
 
@@ -143,13 +146,13 @@ class DeployScript
             "clpctl db:add --domainName=$domain --databaseName=$databaseName --databaseUserName=$siteUser --databaseUserPassword='$databasePassword'",
             "rm -rf /home/$siteUser/htdocs/$domain",
             "su $siteUser",
-            "cd ~/htdocs",
+            'cd ~/htdocs',
             "git clone $repositoryUrl $domain",
             "cd $domain",
-            "cp .env.example .env",
-            "composer install",
-            "php artisan key:generate",
-            "exit",
+            'cp .env.example .env',
+            'composer install',
+            'php artisan key:generate',
+            'exit',
             "clpctl lets-encrypt:install:certificate --domainName=$domain",
         ]);
 
@@ -160,6 +163,7 @@ class DeployScript
     {
         return str($this->getDomain())->explode('.')->slice(0, -1)->implode('-');
     }
+
     /**
      * Get the value of script
      */
@@ -171,14 +175,14 @@ class DeployScript
     /**
      * Set the value of script
      *
-     * @return  self
+     * @return self
      */
     public function script(array|string $script): static
     {
         if (gettype($script) === 'array') {
             $this->script = [
                 ...$this->script,
-                ...$script
+                ...$script,
             ];
         } else {
             $this->script[] = $script;
@@ -192,14 +196,17 @@ class DeployScript
      */
     public function getDomain(): ?string
     {
-        if ($this->site) return $this->site->domain;
+        if ($this->site) {
+            return $this->site->domain;
+        }
+
         return $this->domain;
     }
 
     /**
      * Set the value of domain
      *
-     * @return  self
+     * @return self
      */
     public function domain($domain): static
     {
@@ -213,7 +220,7 @@ class DeployScript
      */
     public function getSiteUser(): ?string
     {
-        if (!$this->siteUser) {
+        if (! $this->siteUser) {
             return str($this->getDomain())->replace('.', '-')->toString();
         }
 
@@ -223,7 +230,7 @@ class DeployScript
     /**
      * Set the value of siteUser
      *
-     * @return  self
+     * @return self
      */
     public function siteUser($siteUser): static
     {
@@ -243,7 +250,7 @@ class DeployScript
     /**
      * Set the value of repositoryUrl
      *
-     * @return  self
+     * @return self
      */
     public function repositoryUrl($repositoryUrl): static
     {
@@ -272,7 +279,9 @@ class DeployScript
      */
     public function getServer(): ?Server
     {
-        if ($this->site && $this->server == null) return $this->site->server;
+        if ($this->site && $this->server === null) {
+            return $this->site->server;
+        }
 
         return $this->server;
     }
@@ -280,7 +289,7 @@ class DeployScript
     /**
      * Set the value of server
      *
-     * @return  self
+     * @return self
      */
     public function server($server)
     {
@@ -291,17 +300,17 @@ class DeployScript
 
     public function toSiteDirectory(): static
     {
-        return $this->script("cd ~/htdocs/" . $this->getDomain());
+        return $this->script('cd ~/htdocs/'.$this->getDomain());
     }
 
     public function actAsSiteUser(): static
     {
-        return $this->script("su " . $this->getSiteUser());
+        return $this->script('su '.$this->getSiteUser());
     }
 
     public function checkoutTo(string $commit): static
     {
-        return $this->gitFetch()->script('git checkout ' . $commit);
+        return $this->gitFetch()->script('git checkout '.$commit);
     }
 
     public function gitFetch(): static
@@ -312,13 +321,13 @@ class DeployScript
     public function downloadEnv(?string $destination = null): Process
     {
         return $this->getSsh()
-            ->download('/home/' . $this->getSiteUser() . '/htdocs/' . $this->getDomain() . '/.env', $destination ?? storage_path('private' . '/.env.' . $this->getDomain()));
+            ->download('/home/'.$this->getSiteUser().'/htdocs/'.$this->getDomain().'/.env', $destination ?? storage_path('private'.'/.env.'.$this->getDomain()));
     }
 
     public function uploadEnv(?string $source = null): Process
     {
         return $this->getSsh()
-            ->upload($source ?? storage_path('private' . '/.env.' . $this->getDomain()), '/home/' . $this->getSiteUser() . '/htdocs/' . $this->getDomain() . '/.env');
+            ->upload($source ?? storage_path('private'.'/.env.'.$this->getDomain()), '/home/'.$this->getSiteUser().'/htdocs/'.$this->getDomain().'/.env');
     }
 
     /**
@@ -337,7 +346,7 @@ class DeployScript
     /**
      * Set the value of databasePassword
      *
-     * @return  self
+     * @return self
      */
     public function databasePassword($databasePassword): static
     {
@@ -354,6 +363,7 @@ class DeployScript
     public function site(?Site $site): DeployScript
     {
         $this->site = $site;
+
         return $this;
     }
 }

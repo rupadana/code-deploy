@@ -42,7 +42,7 @@ class SocialmentController extends BaseController
         if (! request()->session()->exists('socialment.intended.url')) {
             request()->session()->put('socialment.intended.url', $referer);
         }
-        
+
         return Socialment::resolveRedirectCallback($provider, Socialite::driver($provider))->redirect();
     }
 
@@ -126,7 +126,7 @@ class SocialmentController extends BaseController
 
             return redirect()->to($intendedUrl);
         } catch (Exception $e) {
-            Session::flash('socialment.error', 'An unknown error occurred: ' . $e->getMessage() . '. Please try again.');
+            Session::flash('socialment.error', 'An unknown error occurred: '.$e->getMessage().'. Please try again.');
 
             return redirect()->to($intendedUrl);
         }

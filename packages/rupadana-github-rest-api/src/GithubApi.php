@@ -11,22 +11,18 @@ class GithubApi
 
     protected $baseUrl = 'https://api.github.com';
 
-
     protected $endpoint = '/';
-
 
     public static function make($token): static
     {
         return new static($token);
     }
 
-
     public function __construct(public ?string $token)
     {
-        $this->client = Http::withHeader('Authorization', 'token ' . $token)
+        $this->client = Http::withHeader('Authorization', 'token '.$token)
             ->baseUrl($this->baseUrl);
     }
-
 
     public function endpoint(string $endpoint): static
     {
@@ -48,12 +44,12 @@ class GithubApi
 
     public function users(string $username = ''): static
     {
-        return $this->endpoint('users/' . $username);
+        return $this->endpoint('users/'.$username);
     }
 
     public function repos(string $repository = ''): static
     {
-        return $this->endpoint('repos/' . $repository);
+        return $this->endpoint('repos/'.$repository);
     }
 
     public function commits(): static

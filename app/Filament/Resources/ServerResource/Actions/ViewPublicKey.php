@@ -12,10 +12,10 @@ class ViewPublicKey extends Action
     {
         parent::setUp();
 
-        $this->modalContent(function(Model $record) {
-            
-            $pub = Storage::disk('private')->get($record->ssh_key_name . '.pub');
-            
+        $this->modalContent(function (Model $record) {
+
+            $pub = Storage::disk('private')->get($record->ssh_key_name.'.pub');
+
             return view('view-public-key', compact('pub'));
         });
     }

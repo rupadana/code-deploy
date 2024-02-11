@@ -17,19 +17,19 @@ class Deployment extends Model
         'server_id',
         'site_id',
         'log',
-        'status'
+        'status',
     ];
 
     protected $casts = [
-        'status' => DeploymentStatus::class
+        'status' => DeploymentStatus::class,
     ];
 
-    public function server() : BelongsTo
+    public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class, 'server_id');
     }
 
-    public function site() : BelongsTo
+    public function site(): BelongsTo
     {
         return $this->belongsTo(Site::class, 'site_id');
     }

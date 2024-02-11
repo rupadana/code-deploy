@@ -16,7 +16,7 @@ class SpaAuthentication
      *
      * @param  Closure(Request): (Response|RedirectResponse)  $next
      */
-    public function handle(Request $request, Closure $next, ?string $guard = 'spa'): Response | RedirectResponse | JsonResponse
+    public function handle(Request $request, Closure $next, ?string $guard = 'spa'): Response|RedirectResponse|JsonResponse
     {
         if (! Auth::guard($guard)->check()) {
             return response()->json(['message' => 'Not logged in'], 401);

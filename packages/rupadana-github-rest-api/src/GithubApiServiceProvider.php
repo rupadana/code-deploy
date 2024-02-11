@@ -2,9 +2,9 @@
 
 namespace Rupadana\GithubApi;
 
+use Rupadana\GithubApi\Commands\GithubApiCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Rupadana\GithubApi\Commands\GithubApiCommand;
 
 class GithubApiServiceProvider extends PackageServiceProvider
 {
