@@ -16,6 +16,7 @@
         "laravel/framework": "^10.10",
         "laravel/pulse": "^1.0@beta",
         "laravel/sanctum": "^3.2",
+        "laravel/telescope": "^4.17",
         "laravel/tinker": "^2.8",
         "nunomaduro/phpinsights": "^2.11",
         "parallax/filament-syntax-entry": "^1.0",
@@ -87,6 +88,5 @@
             "type": "path",
             "url": "packages/*"
         }
-
     ]
 }

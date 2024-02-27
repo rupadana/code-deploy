@@ -12,6 +12,8 @@ class Site extends Model
     use HasFactory;
 
     protected $fillable = [
+        'project-type',
+        'version',
         'domain',
         'server_id',
         'repository',

@@ -68,11 +68,11 @@ class ServerResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->modifyQueryUsing(function(Builder $query) {
-                if(auth()->user()->hasRole(['super_admin'])) {
+            ->modifyQueryUsing(function (Builder $query) {
+                if (auth()->user()->hasRole(['super_admin'])) {
                     return $query;
                 }
-                
+
                 return $query->where('created_by', '12');
             });
     }

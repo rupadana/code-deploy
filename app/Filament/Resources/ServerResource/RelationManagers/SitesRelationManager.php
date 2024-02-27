@@ -47,17 +47,53 @@ class SitesRelationManager extends RelationManager
                                     ->required()
                                     ->searchable(),
 
-                                Checkbox::make('initialize')
-                                    ->hiddenOn('edit')
-                                    ->columnSpanFull()
-                                    ->live(),
+                                Section::make(function (string $operation) {
+                                    return $operation == 'create' ? 'What kind of site would you like to deploy?' : 'Detail';
+                                })
+                                    ->schema([
+                                        Select::make('project-type')
+                                            ->options([
+                                                // 'nodejs' => 'Node.js', TODO: Need some work here
+                                                'php' => 'PHP',
+                                            ])
+                                            ->live()
+                                            ->columnSpanFull()
+                                            ->required(function (string $operation) {
+                                                return $operation == 'create';
+                                            })
+                                            ->disabledOn('edit'),
 
-                                Select::make('template')
-                                    ->options($this->getTemplates())
-                                    ->searchable()
-                                    ->hidden(function (Get $get) {
-                                        return ! $get('initialize');
-                                    }),
+                                        Checkbox::make('initialize')
+                                            ->columnSpanFull()
+                                            ->disabledOn('edit')
+                                            ->live(),
+
+                                        Select::make('template')
+                                            ->options($this->getTemplates())
+                                            ->disabledOn('edit')
+                                            ->searchable()
+                                            ->hidden(function (Get $get) {
+                                                // dd($get('project-type'));
+                                                return !($get('initialize') === true && $get('project-type') === 'php');
+                                            })
+                                            ->columns(1),
+                                        Select::make('version')
+                                            ->disabledOn('edit')
+                                            ->options(function (Get $get) {
+                                                if ($get('project-type') === 'php') {
+                                                    return collect(DeployScript::PHP_VERSIONS)->mapWithKeys(function ($version) {
+                                                        return [$version => $version];
+                                                    });
+                                                }
+
+                                                return [];
+                                            })
+                                            ->required()
+                                            ->hidden(function (Get $get) {
+                                                return !$get('project-type');
+                                            }),
+                                    ])
+                                    ->columns(2),
 
                             ])
                             ->columns(),
@@ -83,6 +119,7 @@ class SitesRelationManager extends RelationManager
                                                     ->domain($record->domain)
                                                     ->actAsSiteUser()
                                                     ->toSiteDirectory()
+                                                    ->gitStash()
                                                     ->gitPull()
                                                     ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
                                                 $process = $deployScript->execute();
@@ -131,20 +168,20 @@ class SitesRelationManager extends RelationManager
                                             ->label('Sync now')
                                             ->action(function (Site $record, Get $get, Set $set) {
 
-                                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
+                                                $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
                                                 if ($record->environment) {
                                                     file_put_contents($path, $get('environment'));
                                                     $record->environment = $get('environment');
                                                     $process = DeployScript::make()
                                                         ->server($record->server)
                                                         ->domain($record->domain)
-                                                        ->uploadEnv(storage_path('private/.env.'.$record->domain.'.'.$record->id));
+                                                        ->uploadEnv(storage_path('private/.env.' . $record->domain . '.' . $record->id));
                                                     $record->save();
                                                 } else {
                                                     $process = DeployScript::make()
                                                         ->server($record->server)
                                                         ->domain($record->domain)
-                                                        ->downloadEnv(storage_path('private/.env.'.$record->domain.'.'.$record->id));
+                                                        ->downloadEnv(storage_path('private/.env.' . $record->domain . '.' . $record->id));
 
                                                     $record->environment = file_get_contents($path);
 
@@ -183,7 +220,7 @@ class SitesRelationManager extends RelationManager
 
     protected function getCommits()
     {
-        if (! $this->cachedMountedTableActionRecord) {
+        if (!$this->cachedMountedTableActionRecord) {
             return collect([]);
         }
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
@@ -206,7 +243,7 @@ class SitesRelationManager extends RelationManager
     {
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
 
-        return Cache::remember('repositories-'.$user->nickname, 86400, function () use ($user) {
+        return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too
 
             return GithubApi::make($user->token)
@@ -252,8 +289,7 @@ class SitesRelationManager extends RelationManager
                                                 'id' => $record->id,
                                                 'token' => $apiToken,
                                             ]),
-                                            'content_type' => 'json',
-                                            'insecure_ssl' => '1',
+                                            'content_type' => 'json'
                                         ],
                                     ]);
 
@@ -262,12 +298,16 @@ class SitesRelationManager extends RelationManager
                                     ->repositoryUrl("https://{$connectedAccount->nickname}:{$token}@github.com/{$record->repository}.git");
 
                                 if ($data['initialize']) {
-                                    $process = $process->initiate($data['template']);
+                                    $process = $process->initiate(
+                                        template: $data['template'],
+                                        projectType: $data['project-type'],
+                                        version: $data['version']
+                                    );
                                 }
 
                                 DeploymentJob::dispatch($process, auth()->user());
 
-                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
+                                $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
 
                                 DeploymentJob::dispatch(
                                     DeployScript::make()
@@ -327,9 +367,9 @@ class SitesRelationManager extends RelationManager
     public static function changeEnvVariable(string $envString, string $key, string $value)
     {
         $original = [];
-        preg_match('/^'.$key.'=(.+)$/m', $envString, $original);
+        preg_match('/^' . $key . '=(.+)$/m', $envString, $original);
 
-        $escaped = $original[0] ?? $key.'=';
+        $escaped = $original[0] ?? $key . '=';
 
         return preg_replace(
             "/^{$escaped}/m",

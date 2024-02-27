@@ -64,7 +64,7 @@ class DeploymentJob implements ShouldQueue
 
             $this->sendSuccessNotification();
         } else {
-            $this->deployment->log = $this->process->getErrorOutput();
+            $this->deployment->log = $this->process->getErrorOutput() . "\n " . $this->process->getOutput();
             $this->deployment->status = 'failure';
             $this->deployment->save();
 

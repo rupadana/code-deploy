@@ -12,6 +12,13 @@ use Symfony\Component\Process\Process;
 
 class DeployScript
 {
+    const PHP_VERSIONS = [
+        '7.4',
+        '8.1',
+        '8.2',
+        '8.3',
+    ];
+
     protected array $script = [];
 
     protected bool $laravel = true;
@@ -120,7 +127,7 @@ class DeployScript
         return $this;
     }
 
-    public function initiate(string $template = 'Laravel 10'): static
+    public function initiate(string $template = 'Laravel 10', string $projectType = 'php', $version = '8.2'): static
     {
         $domain = $this->getDomain();
         $siteUser = $this->getSiteUser();
@@ -141,8 +148,11 @@ class DeployScript
         $databasePassword = $this->getDatabasePassword();
         $databaseName = $this->getDatabaseName();
 
+        if ($projectType === 'php') {
+            $this->script("clpctl site:add:php --domainName=$domain --phpVersion=$version --vhostTemplate='$template' --siteUser=$siteUser --siteUserPassword='$databasePassword'");
+        }
+
         $this->script([
-            "clpctl site:add:php --domainName=$domain --phpVersion=8.2 --vhostTemplate='$template' --siteUser=$siteUser --siteUserPassword='$databasePassword'",
             "clpctl db:add --domainName=$domain --databaseName=$databaseName --databaseUserName=$siteUser --databaseUserPassword='$databasePassword'",
             "rm -rf /home/$siteUser/htdocs/$domain",
             "su $siteUser",
@@ -150,8 +160,16 @@ class DeployScript
             "git clone $repositoryUrl $domain",
             "cd $domain",
             'cp .env.example .env',
-            'composer install',
-            'php artisan key:generate',
+        ]);
+
+        if ($projectType === 'php') {
+            $this->script([
+                'composer install',
+                'php artisan key:generate',
+            ]);
+        }
+
+        $this->script([
             'exit',
             "clpctl lets-encrypt:install:certificate --domainName=$domain",
         ]);
@@ -336,6 +354,11 @@ class DeployScript
     public function getDatabasePassword(): string
     {
         return $this->databasePassword;
+    }
+
+
+    public function gitStash(): static {
+        return $this->script('git stash');
     }
 
     public function gitPull(): static

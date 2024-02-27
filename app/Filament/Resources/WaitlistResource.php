@@ -3,17 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\WaitlistResource\Pages;
-use App\Filament\Resources\WaitlistResource\RelationManagers;
 use App\Models\Waitlist;
-use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class WaitlistResource extends Resource
 {
@@ -34,7 +30,6 @@ class WaitlistResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('email')->sortable(),
-                TextColumn::make('created_at')->sortable(),
             ])
             ->filters([
                 //

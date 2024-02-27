@@ -3,12 +3,9 @@
 namespace App\Livewire;
 
 use Filament\Pages\Auth\Login;
-use Filament\Pages\SimplePage;
-use Livewire\Component;
 
 class LoginPage extends Login
 {
-
     protected static string $view = 'livewire.login-page';
 
     protected static string $layout = 'components.layouts.app';

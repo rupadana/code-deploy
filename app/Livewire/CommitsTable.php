@@ -27,6 +27,7 @@ class CommitsTable extends Component
             ->site($record)
             ->actAsSiteUser()
             ->toSiteDirectory()
+            ->gitStash()
             ->checkoutTo($sha)
             ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 
