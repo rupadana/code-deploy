@@ -7,6 +7,9 @@
     <meta name="application-name" content="{{ config('app.name') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Ready to revolutionize your deployment process? Start deploying with ease using CodeDeploy. Join our waiting list now and experience the future of web deployment." />
+    <meta name="keywords" content="Push To Deploy, PTD, Deployment"/>
+    <meta name="author" content="CodeCrafters"/>
 
     <link rel="icon" href="{{url('favicon.png')}}">
 
