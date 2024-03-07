@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\ServerResource\RelationManagers;
 
-use App\Filament\Resources\SiteResource\Pages\EditSite;
 use App\Filament\Resources\SiteResource\Pages\GeneralSites;
 use App\Jobs\Concerns\SynchronizeEnvironment;
 use App\Jobs\DeploymentJob;
@@ -10,19 +9,12 @@ use App\Models\Site;
 use App\Services\DeployScript;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use Filament\Forms;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\View;
-use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -77,7 +69,7 @@ class SitesRelationManager extends RelationManager
                             ->searchable()
                             ->hidden(function (Get $get) {
                                 // dd($get('project-type'));
-                                return !($get('initialize') === true && $get('project-type') === 'php');
+                                return ! ($get('initialize') === true && $get('project-type') === 'php');
                             })
                             ->columns(1),
                         Select::make('version')
@@ -93,7 +85,7 @@ class SitesRelationManager extends RelationManager
                             })
                             ->required()
                             ->hidden(function (Get $get) {
-                                return !$get('project-type');
+                                return ! $get('project-type');
                             }),
                     ])
                     ->columns(2),
@@ -113,7 +105,7 @@ class SitesRelationManager extends RelationManager
 
     protected function getCommits()
     {
-        if (!$this->cachedMountedTableActionRecord) {
+        if (! $this->cachedMountedTableActionRecord) {
             return collect([]);
         }
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
@@ -136,7 +128,7 @@ class SitesRelationManager extends RelationManager
     {
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
 
-        return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
+        return Cache::remember('repositories-'.$user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too
 
             return GithubApi::make($user->token)
@@ -200,7 +192,7 @@ class SitesRelationManager extends RelationManager
 
                                 DeploymentJob::dispatch($process, auth()->user());
 
-                                $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
+                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
 
                                 DeploymentJob::dispatch(
                                     DeployScript::make()
@@ -261,9 +253,9 @@ class SitesRelationManager extends RelationManager
     public static function changeEnvVariable(string $envString, string $key, string $value)
     {
         $original = [];
-        preg_match('/^' . $key . '=(.+)$/m', $envString, $original);
+        preg_match('/^'.$key.'=(.+)$/m', $envString, $original);
 
-        $escaped = $original[0] ?? $key . '=';
+        $escaped = $original[0] ?? $key.'=';
 
         return preg_replace(
             "/^{$escaped}/m",

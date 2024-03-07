@@ -43,8 +43,7 @@ class DeployHandler extends Handlers
             return static::sendNotFoundResponse();
         }
 
-
-        if('refs/heads/' . $record->branch == $request->ref) {
+        if ('refs/heads/'.$record->branch == $request->ref) {
             return response()->json([
                 'message' => 'nothing to do',
             ], 200);

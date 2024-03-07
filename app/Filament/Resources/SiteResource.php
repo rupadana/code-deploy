@@ -7,7 +7,6 @@ use App\Models\Server;
 use App\Models\Site;
 use App\Services\DeployScript;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Resources\Resource;
@@ -62,9 +61,10 @@ class SiteResource extends Resource
     public function getRepositories(string $user_id)
     {
         $user = ConnectedAccount::query()->where('user_id', $user_id)->first();
-        return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
+
+        return Cache::remember('repositories-'.$user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too
-            
+
             return GithubApi::make($user->token)
                 ->user()
                 ->repos()
@@ -103,7 +103,7 @@ class SiteResource extends Resource
             'general' => Pages\GeneralSites::route('/{record}/general'),
             'deployment' => Pages\DeploymentSites::route('/{record}/deployment'),
             'environment' => Pages\EnvironmentSites::route('/{record}/environment'),
-            'deployment-log' => Pages\ListDeployment::route('/{record}/deployment-log') 
+            'deployment-log' => Pages\ListDeployment::route('/{record}/deployment-log'),
         ];
     }
 
@@ -113,7 +113,7 @@ class SiteResource extends Resource
             Pages\GeneralSites::class,
             Pages\DeploymentSites::class,
             Pages\EnvironmentSites::class,
-            Pages\ListDeployment::class
+            Pages\ListDeployment::class,
         ]);
     }
 }

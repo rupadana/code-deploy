@@ -13,8 +13,8 @@ use Livewire\Component;
 
 class ListDeploymentLog extends Component implements HasForms, HasTable
 {
-    use InteractsWithTable;
     use InteractsWithForms;
+    use InteractsWithTable;
 
     public function table(Table $table): Table
     {
@@ -24,7 +24,7 @@ class ListDeploymentLog extends Component implements HasForms, HasTable
                 TextColumn::make('site.domain'),
                 TextColumn::make('status')
                     ->badge(),
-                TextColumn::make('created_at')
+                TextColumn::make('created_at'),
             ])
             ->filters([
                 // ...

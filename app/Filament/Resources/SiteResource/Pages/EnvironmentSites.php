@@ -5,23 +5,14 @@ namespace App\Filament\Resources\SiteResource\Pages;
 use App\Filament\Resources\SiteResource;
 use App\Models\Site;
 use App\Services\DeployScript;
-use ChrisReedIO\Socialment\Models\ConnectedAccount;
-use Filament\Actions;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\View;
-use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use Illuminate\Support\Facades\Cache;
-use Rupadana\GithubApi\GithubApi;
 
 class EnvironmentSites extends EditRecord
 {
@@ -60,20 +51,20 @@ class EnvironmentSites extends EditRecord
                             ->label('Sync now')
                             ->action(function (Site $record, Get $get, Set $set) {
 
-                                $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
+                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
                                 if ($record->environment) {
                                     file_put_contents($path, $get('environment'));
                                     $record->environment = $get('environment');
                                     $process = DeployScript::make()
                                         ->server($record->server)
                                         ->domain($record->domain)
-                                        ->uploadEnv(storage_path('private/.env.' . $record->domain . '.' . $record->id));
+                                        ->uploadEnv(storage_path('private/.env.'.$record->domain.'.'.$record->id));
                                     $record->save();
                                 } else {
                                     $process = DeployScript::make()
                                         ->server($record->server)
                                         ->domain($record->domain)
-                                        ->downloadEnv(storage_path('private/.env.' . $record->domain . '.' . $record->id));
+                                        ->downloadEnv(storage_path('private/.env.'.$record->domain.'.'.$record->id));
 
                                     $record->environment = file_get_contents($path);
 
@@ -91,7 +82,7 @@ class EnvironmentSites extends EditRecord
                     ->schema([
                         Textarea::make('environment')
                             ->rows(15),
-                    ])
+                    ]),
             ]);
     }
 }

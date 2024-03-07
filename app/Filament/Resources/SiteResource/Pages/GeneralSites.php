@@ -4,8 +4,6 @@ namespace App\Filament\Resources\SiteResource\Pages;
 
 use App\Filament\Resources\SiteResource;
 use App\Services\DeployScript;
-use ChrisReedIO\Socialment\Models\ConnectedAccount;
-use Filament\Actions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -13,8 +11,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Pages\EditRecord;
-use Illuminate\Support\Facades\Cache;
-use Rupadana\GithubApi\GithubApi;
 
 class GeneralSites extends EditRecord
 {
@@ -77,7 +73,7 @@ class GeneralSites extends EditRecord
                             ->searchable()
                             ->hidden(function (Get $get) {
                                 // dd($get('project-type'));
-                                return !($get('initialize') === true && $get('project-type') === 'php');
+                                return ! ($get('initialize') === true && $get('project-type') === 'php');
                             })
                             ->columns(1),
                         Select::make('version')
@@ -93,7 +89,7 @@ class GeneralSites extends EditRecord
                             })
                             ->required()
                             ->hidden(function (Get $get) {
-                                return !$get('project-type');
+                                return ! $get('project-type');
                             }),
                     ])
                     ->columns(2),
