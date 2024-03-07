@@ -58,6 +58,7 @@ class DeployHandler extends Handlers
                 ->actAsSiteUser()
                 ->toSiteDirectory()
                 ->gitStash()
+                ->gitStashClear()
                 ->checkoutTo($request->after)
                 ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 

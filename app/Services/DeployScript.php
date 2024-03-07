@@ -361,6 +361,11 @@ class DeployScript
         return $this->script('git stash');
     }
 
+    public function gitStashClear() : static
+    {
+        return $this->script('git stash clear');
+    }
+
     public function gitPull(): static
     {
         return $this->script('git pull');

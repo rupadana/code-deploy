@@ -56,11 +56,12 @@ class DeploymentSites extends EditRecord
                                     ->actAsSiteUser()
                                     ->toSiteDirectory()
                                     ->gitStash()
+                                    ->gitStashClear()
                                     ->gitFetch()
                                     ->checkoutTo($record->branch)
                                     ->gitPull()
                                     ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
-                                    
+
                                 $process = $deployScript->execute();
 
                                 $notification = Notification::make();
