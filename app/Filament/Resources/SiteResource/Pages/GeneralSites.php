@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Filament\Resources\SiteResource\Pages;
+
+use App\Filament\Resources\SiteResource;
+use App\Services\DeployScript;
+use ChrisReedIO\Socialment\Models\ConnectedAccount;
+use Filament\Actions;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Cache;
+use Rupadana\GithubApi\GithubApi;
+
+class GeneralSites extends EditRecord
+{
+    protected static string $resource = SiteResource::class;
+
+    protected static ?string $title = 'General';
+
+    public static function getNavigationIcon(): ?string
+    {
+        return 'heroicon-o-cog-6-tooth';
+    }
+
+    public function getBreadcrumb(): string
+    {
+        return 'General';
+    }
+
+    public function form(Form $form): Form
+    {
+        $resource = app($this->getResource());
+        $server = $this->getRecord()->server;
+
+        return $form
+            ->schema([
+                TextInput::make('domain')
+                    ->required()
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                Select::make('repository')
+                    ->options($resource->getRepositories($server->created_by))
+                    ->required()
+                    ->searchable(),
+                TextInput::make('branch')
+                    ->required(),
+                Section::make(function (string $operation) {
+                    return $operation == 'create' ? 'What kind of site would you like to deploy?' : 'Detail';
+                })
+                    ->schema([
+                        Select::make('project-type')
+                            ->options([
+                                // 'nodejs' => 'Node.js', TODO: Need some work here
+                                'php' => 'PHP',
+                            ])
+                            ->live()
+                            ->columnSpanFull()
+                            ->required(function (string $operation) {
+                                return $operation == 'create';
+                            })
+                            ->disabledOn('edit'),
+
+                        Checkbox::make('initialize')
+                            ->columnSpanFull()
+                            ->disabledOn('edit')
+                            ->hiddenOn('edit')
+                            ->live(),
+
+                        Select::make('template')
+                            ->options($resource->getTemplates($server))
+                            ->disabledOn('edit')
+                            ->searchable()
+                            ->hidden(function (Get $get) {
+                                // dd($get('project-type'));
+                                return !($get('initialize') === true && $get('project-type') === 'php');
+                            })
+                            ->columns(1),
+                        Select::make('version')
+                            ->disabledOn('edit')
+                            ->options(function (Get $get) {
+                                if ($get('project-type') === 'php') {
+                                    return collect(DeployScript::PHP_VERSIONS)->mapWithKeys(function ($version) {
+                                        return [$version => $version];
+                                    });
+                                }
+
+                                return [];
+                            })
+                            ->required()
+                            ->hidden(function (Get $get) {
+                                return !$get('project-type');
+                            }),
+                    ])
+                    ->columns(2),
+
+            ]);
+    }
+}

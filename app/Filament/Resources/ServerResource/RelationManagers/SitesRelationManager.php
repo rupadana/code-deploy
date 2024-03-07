@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\ServerResource\RelationManagers;
 
+use App\Filament\Resources\SiteResource\Pages\EditSite;
+use App\Filament\Resources\SiteResource\Pages\GeneralSites;
 use App\Jobs\Concerns\SynchronizeEnvironment;
 use App\Jobs\DeploymentJob;
 use App\Models\Site;
@@ -15,6 +17,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\View;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
@@ -23,6 +26,7 @@ use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\Action as ActionsAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Cache;
 use Rupadana\GithubApi\GithubApi;
@@ -35,175 +39,64 @@ class SitesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Tabs::make('Tabs')
-                    ->schema([
-                        Tab::make('General')
-                            ->schema([
-                                Forms\Components\TextInput::make('domain')
-                                    ->required()
-                                    ->maxLength(255),
-                                Select::make('repository')
-                                    ->options($this->getRepositories())
-                                    ->required()
-                                    ->searchable(),
-
-                                Section::make(function (string $operation) {
-                                    return $operation == 'create' ? 'What kind of site would you like to deploy?' : 'Detail';
-                                })
-                                    ->schema([
-                                        Select::make('project-type')
-                                            ->options([
-                                                // 'nodejs' => 'Node.js', TODO: Need some work here
-                                                'php' => 'PHP',
-                                            ])
-                                            ->live()
-                                            ->columnSpanFull()
-                                            ->required(function (string $operation) {
-                                                return $operation == 'create';
-                                            })
-                                            ->disabledOn('edit'),
-
-                                        Checkbox::make('initialize')
-                                            ->columnSpanFull()
-                                            ->disabledOn('edit')
-                                            ->live(),
-
-                                        Select::make('template')
-                                            ->options($this->getTemplates())
-                                            ->disabledOn('edit')
-                                            ->searchable()
-                                            ->hidden(function (Get $get) {
-                                                // dd($get('project-type'));
-                                                return ! ($get('initialize') === true && $get('project-type') === 'php');
-                                            })
-                                            ->columns(1),
-                                        Select::make('version')
-                                            ->disabledOn('edit')
-                                            ->options(function (Get $get) {
-                                                if ($get('project-type') === 'php') {
-                                                    return collect(DeployScript::PHP_VERSIONS)->mapWithKeys(function ($version) {
-                                                        return [$version => $version];
-                                                    });
-                                                }
-
-                                                return [];
-                                            })
-                                            ->required()
-                                            ->hidden(function (Get $get) {
-                                                return ! $get('project-type');
-                                            }),
-                                    ])
-                                    ->columns(2),
-
-                            ])
-                            ->columns(),
-
-                        Tab::make('Deployment')
-                            ->hiddenOn('create')
-                            ->schema([
-                                Section::make('Deployment')
-                                    ->schema([
-                                        Textarea::make('script')
-                                            ->rows(10),
-                                    ])
-                                    ->hiddenOn('create')
-                                    ->headerActions([
-                                        Action::make('deploy')
-                                            ->color('success')
-                                            ->action(function (Site $record, Get $get) {
-
-                                                $this->dispatch('deploy-logs', 'out', 'Starting deployment...');
-                                                $record->script = $get('script');
-                                                $deployScript = DeployScript::make()
-                                                    ->server($record->server)
-                                                    ->domain($record->domain)
-                                                    ->actAsSiteUser()
-                                                    ->toSiteDirectory()
-                                                    ->gitStash()
-                                                    ->gitPull()
-                                                    ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
-                                                $process = $deployScript->execute();
-
-                                                $notification = Notification::make();
-
-                                                if ($process->isSuccessful()) {
-                                                    $this->dispatch('deploy-logs', 'out', $process->getOutput());
-                                                    $notification->title('Deployment successfully')
-                                                        ->success();
-                                                } else {
-                                                    $this->dispatch('deploy-logs', 'out', $process->getErrorOutput());
-                                                    $notification->title('Deployment failed')
-                                                        ->danger();
-                                                }
-
-                                                $record->save();
-
-                                                $notification->send();
-                                            }),
-                                    ]),
-
-                                Section::make('Deployment Log')
-                                    ->schema([
-                                        View::make('view-deployment-logs')
-                                            ->viewData([
-                                                'listener' => 'deploy-logs',
-                                            ]),
-                                    ]),
-                                ViewField::make('commits')
-                                    ->view('view-commits')
-                                    ->viewData([
-                                        'commits' => $this->getCommits()->toArray(),
-                                        'record' => $this->getCurrentRecordFromTable(),
-                                    ])
-                                    ->columnSpanFull(),
-                            ]),
-                        Tab::make('Environment')
-                            ->schema([
-                                Section::make('.env')
-                                    ->description(function (Site $record) {
-                                        return $record->environment == null ? 'You need to synchronize .env file' : '';
-                                    })
-                                    ->headerActions([
-                                        Action::make('sync-env')
-                                            ->label('Sync now')
-                                            ->action(function (Site $record, Get $get, Set $set) {
-
-                                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
-                                                if ($record->environment) {
-                                                    file_put_contents($path, $get('environment'));
-                                                    $record->environment = $get('environment');
-                                                    $process = DeployScript::make()
-                                                        ->server($record->server)
-                                                        ->domain($record->domain)
-                                                        ->uploadEnv(storage_path('private/.env.'.$record->domain.'.'.$record->id));
-                                                    $record->save();
-                                                } else {
-                                                    $process = DeployScript::make()
-                                                        ->server($record->server)
-                                                        ->domain($record->domain)
-                                                        ->downloadEnv(storage_path('private/.env.'.$record->domain.'.'.$record->id));
-
-                                                    $record->environment = file_get_contents($path);
-
-                                                    $record->save();
-
-                                                    $set('environment', $record->environment);
-                                                }
-
-                                                Notification::make()
-                                                    ->success()
-                                                    ->title('Sync environment successfully')
-                                                    ->send();
-                                            }),
-                                    ])
-                                    ->schema([
-                                        Textarea::make('environment')
-                                            ->rows(15),
-                                    ]),
-                            ])
-                            ->hiddenOn('create'),
-                    ])
+                Forms\Components\TextInput::make('domain')
+                    ->required()
+                    ->maxLength(255)
                     ->columnSpanFull(),
+                Select::make('repository')
+                    ->options($this->getRepositories())
+                    ->required()
+                    ->searchable(),
+                TextInput::make('branch')
+                    ->required(),
+
+                Section::make(function (string $operation) {
+                    return $operation == 'create' ? 'What kind of site would you like to deploy?' : 'Detail';
+                })
+                    ->schema([
+                        Select::make('project-type')
+                            ->options([
+                                // 'nodejs' => 'Node.js', TODO: Need some work here
+                                'php' => 'PHP',
+                            ])
+                            ->live()
+                            ->columnSpanFull()
+                            ->required(function (string $operation) {
+                                return $operation == 'create';
+                            })
+                            ->disabledOn('edit'),
+
+                        Checkbox::make('initialize')
+                            ->columnSpanFull()
+                            ->disabledOn('edit')
+                            ->live(),
+
+                        Select::make('template')
+                            ->options($this->getTemplates())
+                            ->disabledOn('edit')
+                            ->searchable()
+                            ->hidden(function (Get $get) {
+                                // dd($get('project-type'));
+                                return !($get('initialize') === true && $get('project-type') === 'php');
+                            })
+                            ->columns(1),
+                        Select::make('version')
+                            ->disabledOn('edit')
+                            ->options(function (Get $get) {
+                                if ($get('project-type') === 'php') {
+                                    return collect(DeployScript::PHP_VERSIONS)->mapWithKeys(function ($version) {
+                                        return [$version => $version];
+                                    });
+                                }
+
+                                return [];
+                            })
+                            ->required()
+                            ->hidden(function (Get $get) {
+                                return !$get('project-type');
+                            }),
+                    ])
+                    ->columns(2),
 
             ]);
     }
@@ -220,7 +113,7 @@ class SitesRelationManager extends RelationManager
 
     protected function getCommits()
     {
-        if (! $this->cachedMountedTableActionRecord) {
+        if (!$this->cachedMountedTableActionRecord) {
             return collect([]);
         }
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
@@ -243,7 +136,7 @@ class SitesRelationManager extends RelationManager
     {
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
 
-        return Cache::remember('repositories-'.$user->nickname, 86400, function () use ($user) {
+        return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too
 
             return GithubApi::make($user->token)
@@ -307,7 +200,7 @@ class SitesRelationManager extends RelationManager
 
                                 DeploymentJob::dispatch($process, auth()->user());
 
-                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
+                                $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
 
                                 DeploymentJob::dispatch(
                                     DeployScript::make()
@@ -336,9 +229,10 @@ class SitesRelationManager extends RelationManager
                     ->slideOver(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
+                ActionsAction::make('edit')
+                    ->url(fn (Site $record) => GeneralSites::getUrl(['record' => $record]))
                     ->label('Manage site')
-                    ->slideOver(),
+                    ->icon('heroicon-o-globe-alt'),
                 Tables\Actions\DeleteAction::make()
                     ->after(function (Site $record) {
                         $server = $record->server;
@@ -367,9 +261,9 @@ class SitesRelationManager extends RelationManager
     public static function changeEnvVariable(string $envString, string $key, string $value)
     {
         $original = [];
-        preg_match('/^'.$key.'=(.+)$/m', $envString, $original);
+        preg_match('/^' . $key . '=(.+)$/m', $envString, $original);
 
-        $escaped = $original[0] ?? $key.'=';
+        $escaped = $original[0] ?? $key . '=';
 
         return preg_replace(
             "/^{$escaped}/m",

@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Filament\Resources\SiteResource\Pages;
+
+use App\Filament\Resources\SiteResource;
+use App\Models\Site;
+use App\Services\DeployScript;
+use ChrisReedIO\Socialment\Models\ConnectedAccount;
+use Filament\Actions;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\View;
+use Filament\Forms\Components\ViewField;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Cache;
+use Rupadana\GithubApi\GithubApi;
+
+class EnvironmentSites extends EditRecord
+{
+    protected static string $resource = SiteResource::class;
+
+    protected static ?string $title = 'Environment';
+
+    public static function getNavigationIcon(): ?string
+    {
+        return 'heroicon-o-document';
+    }
+
+    public function getBreadcrumb(): string
+    {
+        return 'Environment';
+    }
+
+    protected function getFormActions(): array
+    {
+        return [];
+    }
+
+    public function form(Form $form): Form
+    {
+        $resource = app($this->getResource());
+        $server = $this->getRecord()->server;
+
+        return $form
+            ->schema([
+                Section::make('.env')
+                    ->description(function (Site $record) {
+                        return $record->environment == null ? 'You need to synchronize .env file' : '';
+                    })
+                    ->headerActions([
+                        Action::make('sync-env')
+                            ->label('Sync now')
+                            ->action(function (Site $record, Get $get, Set $set) {
+
+                                $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
+                                if ($record->environment) {
+                                    file_put_contents($path, $get('environment'));
+                                    $record->environment = $get('environment');
+                                    $process = DeployScript::make()
+                                        ->server($record->server)
+                                        ->domain($record->domain)
+                                        ->uploadEnv(storage_path('private/.env.' . $record->domain . '.' . $record->id));
+                                    $record->save();
+                                } else {
+                                    $process = DeployScript::make()
+                                        ->server($record->server)
+                                        ->domain($record->domain)
+                                        ->downloadEnv(storage_path('private/.env.' . $record->domain . '.' . $record->id));
+
+                                    $record->environment = file_get_contents($path);
+
+                                    $record->save();
+
+                                    $set('environment', $record->environment);
+                                }
+
+                                Notification::make()
+                                    ->success()
+                                    ->title('Sync environment successfully')
+                                    ->send();
+                            }),
+                    ])
+                    ->schema([
+                        Textarea::make('environment')
+                            ->rows(15),
+                    ])
+            ]);
+    }
+}

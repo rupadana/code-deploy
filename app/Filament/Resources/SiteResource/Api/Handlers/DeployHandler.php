@@ -43,6 +43,13 @@ class DeployHandler extends Handlers
             return static::sendNotFoundResponse();
         }
 
+
+        if('refs/heads/' . $record->branch == $request->ref) {
+            return response()->json([
+                'message' => 'nothing to do',
+            ], 200);
+        }
+
         if ($request->header('X-GitHub-Event') == 'push') {
             $server = $record->server;
 
@@ -55,7 +62,7 @@ class DeployHandler extends Handlers
                 ->checkoutTo($request->after)
                 ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 
-            // TODO : is it right to use job here?
+            // TODO : is it right to use job here? because we can't notify to github when its failed
 
             DeploymentJob::dispatch($process, $server->owner, finish: SetSiteSha::make(['sha' => $request->after]));
 
