@@ -90,6 +90,17 @@ class SitesRelationManager extends RelationManager
                     ])
                     ->columns(2),
 
+                Section::make('Advanced')
+                    ->schema([
+                        TextInput::make('directory')
+                            ->helperText('A custom directory will be used if you initiate the project manually.'),
+                        TextInput::make('site-user')
+                            ->helperText('It will be used to deployment process'),
+                    ])
+                    ->collapsible()
+                    ->collapsed()
+                    ->columns(),
+
             ]);
     }
 
@@ -153,6 +164,15 @@ class SitesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data) {
+                        if (! (isset($data['directory']) && $data['directory'])) {
+                            $data['directory'] = DeployScript::make()->domain($data['domain'])->getSiteDirectory();
+                        }
+
+                        $data['created_by'] = auth()->user()->id;
+
+                        return $data;
+                    })
                     ->after(function (array $data, Site $record) {
                         // TODO : Use nested Deployment Process on this Process
                         if ($data['initialize']) {
@@ -242,11 +262,6 @@ class SitesRelationManager extends RelationManager
                             ->send();
                     })
                     ->successNotification(null),
-            ])
-            ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
             ]);
     }
 

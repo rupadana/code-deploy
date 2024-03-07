@@ -3,13 +3,16 @@
 namespace App\Filament\Resources\SiteResource\Pages;
 
 use App\Filament\Resources\SiteResource;
+use App\Models\Site;
 use App\Services\DeployScript;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
 class GeneralSites extends EditRecord
@@ -45,6 +48,9 @@ class GeneralSites extends EditRecord
                     ->searchable(),
                 TextInput::make('branch')
                     ->required(),
+
+                TextInput::make('directory'),
+
                 Section::make(function (string $operation) {
                     return $operation == 'create' ? 'What kind of site would you like to deploy?' : 'Detail';
                 })
@@ -95,5 +101,35 @@ class GeneralSites extends EditRecord
                     ->columns(2),
 
             ]);
+    }
+
+    /**
+     * @return array<Action | ActionGroup>
+     */
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getSaveFormAction(),
+            $this->getWebhookUrlAction(),
+            $this->getCancelFormAction(),
+        ];
+    }
+
+    protected function getWebhookUrlAction()
+    {
+        return Action::make('webhook-url')
+            ->color('success')
+            ->action(function (Site $record) {
+                $url = route('api.admin.sites.deploy', [
+                    'id' => $record->id,
+                    'token' => auth()->user()->createToken('github', ['site:deploy'])->plainTextToken,
+                ]);
+                Notification::make()
+                    ->title('Webhook URL Successfully generated!')
+                    ->body($url)
+                    ->success()
+                    ->persistent()
+                    ->send();
+            });
     }
 }

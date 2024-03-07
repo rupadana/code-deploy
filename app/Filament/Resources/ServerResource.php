@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServerResource\Pages;
 use App\Models\Server;
+use App\Models\User;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
@@ -34,6 +36,9 @@ class ServerResource extends Resource
                     ->label('SSH Port')
                     ->default(22)
                     ->required(),
+                Select::make('created_by')
+                    ->options(User::all()->pluck('name', 'id'))
+                    ->hidden(fn () => ! auth()->user()->hasRole('super_admin')),
             ]);
     }
 
@@ -74,7 +79,7 @@ class ServerResource extends Resource
                     return $query;
                 }
 
-                return $query->where('created_by', '12');
+                return $query->where('created_by', auth()->user()->id);
             });
     }
 

@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Site;
 use App\Models\User;
+use BezhanSalleh\FilamentExceptions\Models\Exception;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class SitePolicy
+class ExceptionPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class SitePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_site');
+        return $user->can('view_any_exception');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Site $site): bool
+    public function view(User $user, Exception $exception): bool
     {
-        return $user->can('view_site') && $user->id === $site->created_by;
+        return $user->can('view_exception');
     }
 
     /**
@@ -31,23 +31,23 @@ class SitePolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_site');
+        return $user->can('create_exception');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Site $site): bool
+    public function update(User $user, Exception $exception): bool
     {
-        return $user->can('update_site') && $user->id === $site->created_by;
+        return $user->can('update_exception');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Site $site): bool
+    public function delete(User $user, Exception $exception): bool
     {
-        return $user->can('delete_site') && $user->id === $site->created_by;
+        return $user->can('delete_exception');
     }
 
     /**
@@ -55,15 +55,15 @@ class SitePolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_site');
+        return $user->can('delete_any_exception');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Site $site): bool
+    public function forceDelete(User $user, Exception $exception): bool
     {
-        return $user->can('force_delete_site') && $user->id === $site->created_by;
+        return $user->can('force_delete_exception');
     }
 
     /**
@@ -71,15 +71,15 @@ class SitePolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_site');
+        return $user->can('force_delete_any_exception');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Site $site): bool
+    public function restore(User $user, Exception $exception): bool
     {
-        return $user->can('restore_site') && $user->id === $site->created_by;
+        return $user->can('restore_exception');
     }
 
     /**
@@ -87,15 +87,15 @@ class SitePolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_site');
+        return $user->can('restore_any_exception');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Site $site): bool
+    public function replicate(User $user, Exception $exception): bool
     {
-        return $user->can('replicate_site') && $user->id === $site->created_by;
+        return $user->can('replicate_exception');
     }
 
     /**
@@ -103,6 +103,6 @@ class SitePolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_site');
+        return $user->can('reorder_exception');
     }
 }

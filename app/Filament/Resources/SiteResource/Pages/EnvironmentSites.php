@@ -37,9 +37,6 @@ class EnvironmentSites extends EditRecord
 
     public function form(Form $form): Form
     {
-        $resource = app($this->getResource());
-        $server = $this->getRecord()->server;
-
         return $form
             ->schema([
                 Section::make('.env')

@@ -17,7 +17,7 @@ class CreateServer extends CreateRecord
         $rsa = new \phpseclib\Crypt\RSA();
         $rsa->setPrivateKeyFormat(\phpseclib\Crypt\RSA::PUBLIC_FORMAT_OPENSSH);
         $rsa->setPublicKeyFormat(\phpseclib\Crypt\RSA::PUBLIC_FORMAT_OPENSSH);
-        $rsa->setComment('system@app.codecrafters.id');
+        $rsa->setComment('deployer@deploy.codecrafters.id');
         $keys = $rsa->createKey(4096);
         $publicKey = $keys['publickey'];
         $privateKey = $keys['privatekey'];
@@ -30,7 +30,9 @@ class CreateServer extends CreateRecord
         exec('chmod 600 '.$path);
 
         $data['ssh_key_name'] = $ssh_key_name;
-        $data['created_by'] = auth()->user()->id;
+        if (! isset($data['created_by'])) {
+            $data['created_by'] = auth()->user()->id;
+        }
 
         return $data;
     }

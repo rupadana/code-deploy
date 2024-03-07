@@ -23,6 +23,9 @@ class Site extends Model
         'database_password',
         'current_sha',
         'branch',
+        'directory',
+        'created_by',
+        'site_user',
     ];
 
     public function server(): BelongsTo

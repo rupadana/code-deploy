@@ -177,6 +177,14 @@ class DeployScript
         return $this;
     }
 
+    public function getSiteDirectory()
+    {
+        $siteUser = $this->getSiteUser();
+        $domain = $this->getDomain();
+
+        return "/home/$siteUser/htdocs/$domain";
+    }
+
     public function getDatabaseName(): string
     {
         return str($this->getDomain())->explode('.')->slice(0, -1)->implode('-');
@@ -318,10 +326,16 @@ class DeployScript
 
     public function toSiteDirectory(): static
     {
-        return $this->script('cd ~/htdocs/'.$this->getDomain());
+        if ($this->site && $this->site->directory) {
+            $directory = $this->site->directory;
+        } else {
+            $directory = '~/htdocs/'.$this->getDomain();
+        }
+
+        return $this->script('cd '.$directory);
     }
 
-    public function actAsSiteUser(): static
+    public function actAsSiteUser(?string $siteUser = null): static
     {
         return $this->script('su '.$this->getSiteUser());
     }
