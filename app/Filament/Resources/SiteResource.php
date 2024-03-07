@@ -96,10 +96,7 @@ class SiteResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSites::route('/'),
-            'create' => Pages\CreateSite::route('/create'),
             'view' => Pages\ViewSite::route('/{record}'),
-            'edit' => Pages\EditSite::route('/{record}/edit'),
             'general' => Pages\GeneralSites::route('/{record}/general'),
             'deployment' => Pages\DeploymentSites::route('/{record}/deployment'),
             'environment' => Pages\EnvironmentSites::route('/{record}/environment'),
