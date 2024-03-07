@@ -105,20 +105,4 @@ class SitePolicy
     {
         return $user->can('reorder_site');
     }
-
-
-    public function general(User $user, Site $site): bool
-    {
-        return $this->update($user, $site);
-    }
-
-    public function deployment(User $user, Site $site): bool
-    {
-        return $this->update($user, $site);
-    }
-
-    public function environment(User $user, Site $site): bool
-    {
-        return $this->update($user, $site);
-    }
 }
