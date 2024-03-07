@@ -48,7 +48,6 @@ class DeploymentSites extends EditRecord
                         Action::make('deploy')
                             ->color('success')
                             ->action(function (Site $record, Get $get) {
-
                                 $this->dispatch('deploy-logs', 'out', 'Starting deployment...');
                                 $record->script = $get('script');
                                 $deployScript = DeployScript::make()
@@ -57,8 +56,11 @@ class DeploymentSites extends EditRecord
                                     ->actAsSiteUser()
                                     ->toSiteDirectory()
                                     ->gitStash()
+                                    ->gitFetch()
+                                    ->checkoutTo($record->branch)
                                     ->gitPull()
                                     ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
+                                    
                                 $process = $deployScript->execute();
 
                                 $notification = Notification::make();
