@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Livewire\LoginPage;
+use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -48,7 +49,9 @@ class AdminPanelProvider extends PanelProvider
                         'repo', 'read:user',
                     ]),
                 ApiServicePlugin::make(),
+                FilamentExceptionsPlugin::make()
             ])
+            
             ->pages([
                 Pages\Dashboard::class,
             ])
