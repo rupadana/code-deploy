@@ -26,7 +26,7 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             FilamentExceptions::report($e);
-            
+
             // if ($this->shouldReport($e)) {
             // }
         });

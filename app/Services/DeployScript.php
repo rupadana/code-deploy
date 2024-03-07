@@ -356,8 +356,8 @@ class DeployScript
         return $this->databasePassword;
     }
 
-
-    public function gitStash(): static {
+    public function gitStash(): static
+    {
         return $this->script('git stash');
     }
 

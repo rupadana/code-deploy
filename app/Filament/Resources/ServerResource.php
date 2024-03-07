@@ -50,7 +50,7 @@ class ServerResource extends Resource
                 TextColumn::make('host')
                     ->searchable()
                     ->sortable(),
-                    
+
             ])
             ->filters([
                 //
