@@ -15,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -34,7 +35,12 @@ class SitesRelationManager extends RelationManager
                 Forms\Components\TextInput::make('domain')
                     ->required()
                     ->maxLength(255)
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->afterStateUpdated(function (Get $get, Set $set) {
+                        $set('directory', DeployScript::make()->domain($get['domain'])->getSiteDirectory());
+                        $set('site-user', DeployScript::make()->domain($get['domain'])->getSiteUser());
+                    })
+                    ->live(onBlur: true),
                 Select::make('repository')
                     ->options($this->getRepositories())
                     ->required()
@@ -69,7 +75,7 @@ class SitesRelationManager extends RelationManager
                             ->searchable()
                             ->hidden(function (Get $get) {
                                 // dd($get('project-type'));
-                                return ! ($get('initialize') === true && $get('project-type') === 'php');
+                                return !($get('initialize') === true && $get('project-type') === 'php');
                             })
                             ->columns(1),
                         Select::make('version')
@@ -85,7 +91,7 @@ class SitesRelationManager extends RelationManager
                             })
                             ->required()
                             ->hidden(function (Get $get) {
-                                return ! $get('project-type');
+                                return !$get('project-type');
                             }),
                     ])
                     ->columns(2),
@@ -116,7 +122,7 @@ class SitesRelationManager extends RelationManager
 
     protected function getCommits()
     {
-        if (! $this->cachedMountedTableActionRecord) {
+        if (!$this->cachedMountedTableActionRecord) {
             return collect([]);
         }
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
@@ -139,7 +145,7 @@ class SitesRelationManager extends RelationManager
     {
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
 
-        return Cache::remember('repositories-'.$user->nickname, 86400, function () use ($user) {
+        return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too
 
             return GithubApi::make($user->token)
@@ -165,10 +171,6 @@ class SitesRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data) {
-                        if (! (isset($data['directory']) && $data['directory'])) {
-                            $data['directory'] = DeployScript::make()->domain($data['domain'])->getSiteDirectory();
-                        }
-
                         $data['created_by'] = auth()->user()->id;
 
                         return $data;
@@ -212,7 +214,7 @@ class SitesRelationManager extends RelationManager
 
                                 DeploymentJob::dispatch($process, auth()->user());
 
-                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
+                                $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
 
                                 DeploymentJob::dispatch(
                                     DeployScript::make()
@@ -268,9 +270,9 @@ class SitesRelationManager extends RelationManager
     public static function changeEnvVariable(string $envString, string $key, string $value)
     {
         $original = [];
-        preg_match('/^'.$key.'=(.+)$/m', $envString, $original);
+        preg_match('/^' . $key . '=(.+)$/m', $envString, $original);
 
-        $escaped = $original[0] ?? $key.'=';
+        $escaped = $original[0] ?? $key . '=';
 
         return preg_replace(
             "/^{$escaped}/m",
