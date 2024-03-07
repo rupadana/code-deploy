@@ -23,7 +23,7 @@ class SitePolicy
      */
     public function view(User $user, Site $site): bool
     {
-        return $user->can('view_site') && $user->id === $site->created_by;
+        return $user->can('view_site');
     }
 
     /**
@@ -39,7 +39,7 @@ class SitePolicy
      */
     public function update(User $user, Site $site): bool
     {
-        return $user->can('update_site') && $user->id === $site->created_by;
+        return $user->can('update_site');
     }
 
     /**
@@ -47,7 +47,7 @@ class SitePolicy
      */
     public function delete(User $user, Site $site): bool
     {
-        return $user->can('delete_site') && $user->id === $site->created_by;
+        return $user->can('delete_site');
     }
 
     /**
@@ -63,7 +63,7 @@ class SitePolicy
      */
     public function forceDelete(User $user, Site $site): bool
     {
-        return $user->can('force_delete_site') && $user->id === $site->created_by;
+        return $user->can('force_delete_site');
     }
 
     /**
@@ -79,7 +79,7 @@ class SitePolicy
      */
     public function restore(User $user, Site $site): bool
     {
-        return $user->can('restore_site') && $user->id === $site->created_by;
+        return $user->can('restore_site');
     }
 
     /**
@@ -95,7 +95,7 @@ class SitePolicy
      */
     public function replicate(User $user, Site $site): bool
     {
-        return $user->can('replicate_site') && $user->id === $site->created_by;
+        return $user->can('replicate_site');
     }
 
     /**
