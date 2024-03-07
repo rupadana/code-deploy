@@ -52,7 +52,7 @@ class DeploymentSites extends EditRecord
                                 $record->script = $get('script');
                                 $deployScript = DeployScript::make()
                                     ->server($record->server)
-                                    ->domain($record->domain)
+                                    ->site($record)
                                     ->actAsSiteUser()
                                     ->toSiteDirectory()
                                     ->gitStash()
@@ -61,6 +61,7 @@ class DeploymentSites extends EditRecord
                                     ->checkoutTo($record->branch)
                                     ->gitPull()
                                     ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
+
 
                                 $process = $deployScript->execute();
 

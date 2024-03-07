@@ -56,7 +56,7 @@ class DeployScript
 
     public function getTemplates(): Collection
     {
-        return Cache::remember('deployment-templates-'.$this->getServer()->id, 86400 * 30, function () {
+        return Cache::remember('deployment-templates-' . $this->getServer()->id, 86400 * 30, function () {
             $process = $this->templates()
                 ->execute();
 
@@ -88,11 +88,11 @@ class DeployScript
 
     public function getSsh(): Ssh
     {
-        if (! $this->getServer()) {
+        if (!$this->getServer()) {
             throw new Exception('Server login is empty');
         }
 
-        $ssh_private_key_path = storage_path('private/'.$this->getServer()->ssh_key_name);
+        $ssh_private_key_path = storage_path('private/' . $this->getServer()->ssh_key_name);
 
         return Ssh::create($this->getServer()->user, $this->getServer()->host)
             ->disablePasswordAuthentication()
@@ -133,15 +133,15 @@ class DeployScript
         $siteUser = $this->getSiteUser();
         $repositoryUrl = $this->getRepositoryUrl();
 
-        if (! $domain) {
+        if (!$domain) {
             throw new Exception("Invalid domain : $domain");
         }
 
-        if (! $repositoryUrl) {
+        if (!$repositoryUrl) {
             throw new Exception("Invalid repository url : $repositoryUrl");
         }
 
-        if (! $siteUser) {
+        if (!$siteUser) {
             $siteUser = str($domain)->replace('.', '-')->toString();
         }
 
@@ -246,7 +246,7 @@ class DeployScript
      */
     public function getSiteUser(): ?string
     {
-        if (! $this->siteUser) {
+        if (!$this->siteUser) {
             return str($this->getDomain())->replace('.', '-')->toString();
         }
 
@@ -329,20 +329,20 @@ class DeployScript
         if ($this->site && $this->site->directory) {
             $directory = $this->site->directory;
         } else {
-            $directory = '~/htdocs/'.$this->getDomain();
+            $directory = '~/htdocs/' . $this->getDomain();
         }
 
-        return $this->script('cd '.$directory);
+        return $this->script('cd ' . $directory);
     }
 
     public function actAsSiteUser(?string $siteUser = null): static
     {
-        return $this->script('su '.$this->getSiteUser());
+        return $this->script('su ' . $this->getSiteUser());
     }
 
     public function checkoutTo(string $commit): static
     {
-        return $this->gitFetch()->script('git checkout '.$commit);
+        return $this->gitFetch()->script('git checkout ' . $commit);
     }
 
     public function gitFetch(): static
@@ -352,14 +352,15 @@ class DeployScript
 
     public function downloadEnv(?string $destination = null): Process
     {
+
         return $this->getSsh()
-            ->download('/home/'.$this->getSiteUser().'/htdocs/'.$this->getDomain().'/.env', $destination ?? storage_path('private'.'/.env.'.$this->getDomain()));
+            ->download($this->getSiteDirectory() . '/.env', $destination ?? storage_path('private' . '/.env.' . $this->getDomain()));
     }
 
     public function uploadEnv(?string $source = null): Process
     {
         return $this->getSsh()
-            ->upload($source ?? storage_path('private'.'/.env.'.$this->getDomain()), '/home/'.$this->getSiteUser().'/htdocs/'.$this->getDomain().'/.env');
+            ->upload($source ?? storage_path('private' . '/.env.' . $this->getDomain()), $this->getSiteDirectory() . '/.env');
     }
 
     /**
@@ -406,6 +407,7 @@ class DeployScript
     {
         $this->site = $site;
 
-        return $this;
+        return $this
+            ->siteUser($site->site_user);
     }
 }
