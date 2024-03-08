@@ -100,7 +100,7 @@ class SitesRelationManager extends RelationManager
                     ->schema([
                         TextInput::make('directory')
                             ->helperText('A custom directory will be used if you initiate the project manually.'),
-                        TextInput::make('site-user')
+                        TextInput::make('site_user')
                             ->helperText('It will be used to deployment process'),
                     ])
                     ->collapsible()

@@ -141,10 +141,6 @@ class DeployScript
             throw new Exception("Invalid repository url : $repositoryUrl");
         }
 
-        if (! $siteUser) {
-            $siteUser = str($domain)->replace('.', '-')->toString();
-        }
-
         $databasePassword = $this->getDatabasePassword();
         $databaseName = $this->getDatabaseName();
 
