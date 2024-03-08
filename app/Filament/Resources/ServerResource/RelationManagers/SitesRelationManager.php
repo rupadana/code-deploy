@@ -214,6 +214,8 @@ class SitesRelationManager extends RelationManager
                                         );
                                 }
 
+                                dd($process->getDatabaseName());
+
                                 DeploymentJob::dispatch($process, auth()->user());
 
                                 $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
