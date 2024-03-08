@@ -86,7 +86,7 @@ class DeployHandler extends Handlers
                     ->checkoutTo($request->after)
                     ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
 
-                // TODO : is it right to use job here? because we can't notify to github when its failed 
+                // TODO : is it right to use job here? because we can't notify to github when its failed
 
                 DeploymentJob::dispatch($process, $server->owner, finish: SetSiteSha::make(['sha' => $request->after]));
 

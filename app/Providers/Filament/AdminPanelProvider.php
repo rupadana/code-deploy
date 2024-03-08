@@ -51,7 +51,7 @@ class AdminPanelProvider extends PanelProvider
                     ]),
                 ApiServicePlugin::make(),
                 FilamentExceptionsPlugin::make(),
-                EnvironmentIndicatorPlugin::make()
+                EnvironmentIndicatorPlugin::make(),
             ])
 
             ->pages([
