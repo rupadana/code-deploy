@@ -21,6 +21,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use Rupadana\ApiService\ApiServicePlugin;
 use Rupadana\FilamentAnnounce\FilamentAnnouncePlugin;
 use Rupadana\FilamentUserResource\FilamentUserResourcePlugin;
@@ -50,6 +51,11 @@ class AdminPanelProvider extends PanelProvider
                     ]),
                 ApiServicePlugin::make(),
                 FilamentExceptionsPlugin::make(),
+                EnvironmentIndicatorPlugin::make()
+                    ->showBorder(false)
+                    ->visible(function() {
+                        return auth()->check() && auth()->user()->hasRole('super_admin');
+                    }),
             ])
 
             ->pages([
