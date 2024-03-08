@@ -58,7 +58,7 @@ class DeploymentJob implements ShouldQueue
         $this->deletePendingNotification();
 
         if ($this->process->isSuccessful()) {
-            $this->deployment->log = $this->process->getOutput();
+            $this->deployment->log = $this->process->getErrorOutput() . "\n " . $this->process->getOutput();
             $this->deployment->status = 'success';
             $this->deployment->save();
 
