@@ -214,7 +214,7 @@ class SitesRelationManager extends RelationManager
                                         );
                                 }
 
-                                dd($process->getDatabaseName());
+                                dd($process->getDatabasePassword());
 
                                 DeploymentJob::dispatch($process, auth()->user());
 
