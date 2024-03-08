@@ -38,7 +38,7 @@ class SitesRelationManager extends RelationManager
                     ->columnSpanFull()
                     ->afterStateUpdated(function (Get $get, Set $set) {
                         $set('directory', DeployScript::make()->domain($get('domain'))->getSiteDirectory());
-                        $set('site-user', DeployScript::make()->domain($get('domain'))->getSiteUser());
+                        $set('site_user', DeployScript::make()->domain($get('domain'))->getSiteUser());
                     })
                     ->live(onBlur: true),
                 Select::make('repository')
