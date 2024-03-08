@@ -53,9 +53,6 @@ class AdminPanelProvider extends PanelProvider
                 FilamentExceptionsPlugin::make(),
                 EnvironmentIndicatorPlugin::make()
                     ->showBorder(false)
-                    ->visible(function() {
-                        return auth()->check() && auth()->user()->hasRole('super_admin');
-                    }),
             ])
 
             ->pages([
