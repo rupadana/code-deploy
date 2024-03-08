@@ -7,11 +7,12 @@
     <meta name="application-name" content="{{ config('app.name') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Ready to revolutionize your deployment process? Start deploying with ease using CodeDeploy. Join our waiting list now and experience the future of web deployment." />
-    <meta name="keywords" content="Push To Deploy, PTD, Deployment"/>
-    <meta name="author" content="CodeCrafters"/>
+    <meta name="description"
+        content="Ready to revolutionize your deployment process? Start deploying with ease using CodeDeploy. Join our waiting list now and experience the future of web deployment." />
+    <meta name="keywords" content="Push To Deploy, PTD, Deployment" />
+    <meta name="author" content="CodeCrafters" />
 
-    <link rel="icon" href="{{url('favicon.png')}}">
+    <link rel="icon" href="{{ url('favicon.png') }}">
 
     <title>{{ config('app.name') }}</title>
 
@@ -42,6 +43,19 @@
 
     @filamentScripts
     @vite('resources/js/app.js')
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JW17L5E5WM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-JW17L5E5WM');
+    </script>
 </body>
 
 </html>
