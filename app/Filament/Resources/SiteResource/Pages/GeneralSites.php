@@ -50,7 +50,7 @@ class GeneralSites extends EditRecord
                     ->required(),
 
                 TextInput::make('directory'),
-                TextInput::make('site-user'),
+                TextInput::make('site_user'),
 
                 Section::make(function (string $operation) {
                     return $operation == 'create' ? 'What kind of site would you like to deploy?' : 'Detail';
