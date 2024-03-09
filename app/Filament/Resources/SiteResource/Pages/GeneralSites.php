@@ -95,7 +95,6 @@ class GeneralSites extends EditRecord
             ]);
     }
 
-
     protected function getWebhookUrlAction()
     {
         return Action::make('webhook-url')

@@ -19,6 +19,12 @@ class DeployScript
         '8.3',
     ];
 
+    const NODE_VERSIONS = [
+        'latest',
+        '18',
+        '17',
+    ];
+
     protected array $script = [];
 
     protected bool $laravel = true;

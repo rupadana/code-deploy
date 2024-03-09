@@ -7,7 +7,6 @@ use App\Jobs\Concerns\SynchronizeEnvironment;
 use App\Jobs\DeploymentJob;
 use App\Models\Site;
 use App\Services\DeployScript;
-use Filament\Actions;
 use Filament\Actions\Action as ActionsAction;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;
@@ -34,7 +33,6 @@ class Repository extends EditRecord
         return 'fluentui-branch-24-o';
     }
 
-
     public function getBreadcrumb(): string
     {
         return 'Repository';
@@ -58,7 +56,7 @@ class Repository extends EditRecord
                             ->live(true)
                             ->afterStateUpdated(function (Get $get) {
                                 $this->repository = $get('repository');
-                            })
+                            }),
                     ])
                     ->aside()
                     ->description("Change repository if the project did'nt installed by CodeDeploy yet. But, don't change the repository if already installed."),
@@ -67,7 +65,7 @@ class Repository extends EditRecord
                     ->description('CodeDeploy uses this branch to gather details of the latest commit when you deploy your application.')
                     ->schema([
                         TextInput::make('branch')
-                            ->required(fn (Get $get) => $get('repository') !== null)
+                            ->required(fn (Get $get) => $get('repository') !== null),
                     ]),
                 Section::make(__('deploy.site detail'))
                     ->aside()
@@ -83,7 +81,7 @@ class Repository extends EditRecord
                     ->description('You can use this URL to trigger deployments remotely, You can send a "post" request to this URL.')
                     ->schema([
                         TextInput::make('webhook_url')
-                            ->disabled()
+                            ->disabled(),
                     ])
                     ->aside()
                     ->footerActions([
@@ -104,8 +102,8 @@ class Repository extends EditRecord
                                     ->title('Webhook URL Successfully generated!')
                                     ->success()
                                     ->send();
-                            })
-                    ])
+                            }),
+                    ]),
             ]);
     }
 
@@ -114,7 +112,9 @@ class Repository extends EditRecord
         // $data = $this->form->getState();
         $record = $this->getRecord();
 
-        if (!($this->repository !== null && $record->repository_installed === 0)) return $record;
+        if (! ($this->repository !== null && $record->repository_installed === 0)) {
+            return $record;
+        }
 
         try {
 
@@ -157,7 +157,7 @@ class Repository extends EditRecord
 
             DeploymentJob::dispatch($process, auth()->user());
 
-            $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
+            $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
 
             DeploymentJob::dispatch(
                 DeployScript::make()
@@ -197,7 +197,6 @@ class Repository extends EditRecord
             $this->getCancelFormAction(),
         ];
     }
-
 
     protected function getSaveFormAction(): ActionsAction
     {

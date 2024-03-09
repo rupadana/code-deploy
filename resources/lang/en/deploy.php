@@ -15,5 +15,5 @@ return [
     'repository' => 'Repository',
     'branch' => 'Branch',
     'site detail' => 'Site detail',
-    'deploy webhook url' => 'Deploy Webhook URL'
+    'deploy webhook url' => 'Deploy Webhook URL',
 ];

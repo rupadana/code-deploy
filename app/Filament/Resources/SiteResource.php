@@ -11,10 +11,10 @@ use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 use Rupadana\GithubApi\GithubApi;
 
@@ -35,11 +35,14 @@ class SiteResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('server.name')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('domain')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('repository')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //
@@ -48,13 +51,16 @@ class SiteResource extends Resource
                 Action::make('edit')
                     ->url(fn (Site $record) => GeneralSites::getUrl(['record' => $record]))
                     ->label('Manage site')
-                    ->icon('heroicon-o-globe-alt')
+                    ->icon('heroicon-o-globe-alt'),
             ])
-            ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
-            ]);
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
+                if (auth()->check() && auth()->user()->hasRole('super_admin')) {
+                    return $query;
+                }
+
+                return $query->where('created_by', $user->id);
+            });
     }
 
     public static function getRelations(): array
@@ -68,7 +74,7 @@ class SiteResource extends Resource
     {
         $user = ConnectedAccount::query()->where('user_id', $user_id)->first();
 
-        return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
+        return Cache::remember('repositories-'.$user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too
 
             return GithubApi::make($user->token)
@@ -108,7 +114,7 @@ class SiteResource extends Resource
             'deployment' => Pages\DeploymentSites::route('/{record}/deployment'),
             'environment' => Pages\EnvironmentSites::route('/{record}/environment'),
             'deployment-log' => Pages\ListDeployment::route('/{record}/deployment-log'),
-            'repository' => Pages\Repository::route('{record}/repository')
+            'repository' => Pages\Repository::route('{record}/repository'),
         ];
     }
 
