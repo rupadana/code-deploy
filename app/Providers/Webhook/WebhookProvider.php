@@ -24,25 +24,32 @@ abstract class WebhookProvider
         return $provider;
     }
 
+    public function isQuickDeployEnabled()
+    {
+        return $this->site->quick_deploy;
+    }
+
     public function deploy(string $commit)
     {
-        $server = $this->site->server;
+        if ($this->isQuickDeployEnabled()) {
+            $server = $this->site->server;
 
-        $process = DeployScript::make()
-            ->server($server)
-            ->site($this->site)
-            ->siteUser($this->site->site_user)
-            ->actAsSiteUser()
-            ->toSiteDirectory()
-            ->gitStash()
-            ->gitStashClear()
-            ->gitFetch()
-            ->checkoutTo($commit)
-            ->script(explode('\n', substr(substr(json_encode($this->site->script), 1), 0, -1)));
+            $process = DeployScript::make()
+                ->server($server)
+                ->site($this->site)
+                ->siteUser($this->site->site_user)
+                ->actAsSiteUser()
+                ->toSiteDirectory()
+                ->gitStash()
+                ->gitStashClear()
+                ->gitFetch()
+                ->checkoutTo($commit)
+                ->script(explode('\n', substr(substr(json_encode($this->site->script), 1), 0, -1)));
 
-        // TODO : is it right to use job here? because we can't notify to github when its failed
+            // TODO : is it right to use job here? because we can't notify to github when its failed
 
-        DeploymentJob::dispatch($process, $server->owner, finish: SetSiteSha::make(['sha' => $commit]));
+            DeploymentJob::dispatch($process, $server->owner, finish: SetSiteSha::make(['sha' => $commit]));
+        }
     }
 
 

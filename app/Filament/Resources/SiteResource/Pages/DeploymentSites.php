@@ -38,14 +38,33 @@ class DeploymentSites extends EditRecord
 
         return $form
             ->schema([
-                Section::make('Deployment')
+                Section::make(__('deploy.deployment'))
                     ->schema([
                         Textarea::make('script')
+                            ->label(__('deploy.script'))
                             ->rows(10),
                     ])
                     ->hiddenOn('create')
                     ->headerActions([
+                        Action::make('toggle-quick-deploy')
+                            ->label(fn (Site $record) => $record->quick_deploy === 0 ? __('deploy.enable quick deploy') : __('deploy.disable quick deploy'))
+                            ->color(fn (Site $record) => $record->quick_deploy === 0 ? 'primary' : 'danger')
+                            ->action(function (Site $record) {
+                                if($record->quick_deploy === 0) {
+                                    $record->quick_deploy = 1;
+                                } else {
+                                    $record->quick_deploy = 0;
+                                }
+
+                                $record->save();
+
+                                Notification::make()
+                                    ->success()
+                                    ->title(__('deploy.quick deploy successfully toggled'))
+                                    ->send();
+                            }),
                         Action::make('deploy')
+                            ->label(__('deploy.deploy now'))
                             ->color('success')
                             ->action(function (Site $record, Get $get) {
                                 $this->dispatch('deploy-logs', 'out', 'Starting deployment...');
@@ -67,11 +86,11 @@ class DeploymentSites extends EditRecord
                                 $notification = Notification::make();
 
                                 if ($process->isSuccessful()) {
-                                    $this->dispatch('deploy-logs', 'out', $process->getOutput().'\n'.$process->getOutput());
+                                    $this->dispatch('deploy-logs', 'out', $process->getOutput() . '\n' . $process->getOutput());
                                     $notification->title('Deployment successfully')
                                         ->success();
                                 } else {
-                                    $this->dispatch('deploy-logs', 'out', $process->getErrorOutput().'\n'.$process->getOutput());
+                                    $this->dispatch('deploy-logs', 'out', $process->getErrorOutput() . '\n' . $process->getOutput());
                                     $notification->title('Deployment failed')
                                         ->danger();
                                 }
@@ -82,7 +101,7 @@ class DeploymentSites extends EditRecord
                             }),
                     ]),
 
-                Section::make('Deployment Log')
+                Section::make(__('deploy.deployment log'))
                     ->schema([
                         View::make('view-deployment-logs')
                             ->viewData([
