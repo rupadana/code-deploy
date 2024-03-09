@@ -129,6 +129,6 @@ class DeploymentSites extends EditRecord
 
 
         return $form
-            ->schema();
+            ->schema($this->getCurrentFormSchema());
     }
 }
