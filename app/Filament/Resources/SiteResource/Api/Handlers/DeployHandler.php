@@ -5,6 +5,8 @@ namespace App\Filament\Resources\SiteResource\Api\Handlers;
 use App\Filament\Resources\SiteResource;
 use App\Jobs\Concerns\SetSiteSha;
 use App\Jobs\DeploymentJob;
+use App\Providers\Webhook\GithubWebhookProvider;
+use App\Providers\Webhook\GitlabWebhookProvider;
 use App\Services\DeployScript;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -45,9 +47,7 @@ class DeployHandler extends Handlers
 
     public function handler(Request $request, $id)
     {
-
         try {
-
             if ($request->header('X-GitHub-Event') == 'ping') {
                 return response()->json('pong');
             }
@@ -59,43 +59,31 @@ class DeployHandler extends Handlers
             )
                 ->first();
 
-            if (! $record) {
+            if (!$record) {
                 return static::sendNotFoundResponse();
             }
 
             $this->checkAuthorization($record);
 
-            if ('refs/heads/'.$record->branch !== $request->ref) {
+            $provider = null;
+
+            if ($request->header('X-GitHub-Event')) {
+                $provider = GithubWebhookProvider::make($record, $request);
+            } else if ($request->header('X-Gitlab-Event')) {
+                $provider = GitlabWebhookProvider::make($record, $request);
+            }
+
+            if ($provider) {
+                $provider->handle();
+
                 return response()->json([
-                    'message' => 'nothing to do',
-                ], 200);
+                    'message' => 'on process'
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Provider not supported',
+                ], 401);
             }
-
-            if ($request->header('X-GitHub-Event') == 'push') {
-                $server = $record->server;
-
-                $process = DeployScript::make()
-                    ->server($server)
-                    ->site($record)
-                    ->siteUser($record->site_user)
-                    ->actAsSiteUser()
-                    ->toSiteDirectory()
-                    ->gitStash()
-                    ->gitStashClear()
-                    ->gitFetch()
-                    ->checkoutTo($request->after)
-                    ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));
-
-                // TODO : is it right to use job here? because we can't notify to github when its failed
-
-                DeploymentJob::dispatch($process, $server->owner, finish: SetSiteSha::make(['sha' => $request->after]));
-
-                return static::sendSuccessResponse(null, 'On Process');
-            }
-
-            return response()->json([
-                'message' => 'Event listener not ready',
-            ], 401);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
