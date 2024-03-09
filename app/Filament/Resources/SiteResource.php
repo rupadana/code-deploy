@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SiteResource\Pages;
+use App\Filament\Resources\SiteResource\Pages\GeneralSites;
 use App\Models\Server;
 use App\Models\Site;
 use App\Services\DeployScript;
@@ -11,6 +12,8 @@ use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Cache;
 use Rupadana\GithubApi\GithubApi;
@@ -19,35 +22,38 @@ class SiteResource extends Resource
 {
     protected static ?string $model = Site::class;
 
-    protected static bool $shouldRegisterNavigation = false;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-
-            ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('server.name')
+                    ->sortable(),
+                TextColumn::make('domain')
+                    ->sortable(),
+                TextColumn::make('repository')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Action::make('edit')
+                    ->url(fn (Site $record) => GeneralSites::getUrl(['record' => $record]))
+                    ->label('Manage site')
+                    ->icon('heroicon-o-globe-alt')
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -62,7 +68,7 @@ class SiteResource extends Resource
     {
         $user = ConnectedAccount::query()->where('user_id', $user_id)->first();
 
-        return Cache::remember('repositories-'.$user->nickname, 86400, function () use ($user) {
+        return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too
 
             return GithubApi::make($user->token)
@@ -96,11 +102,13 @@ class SiteResource extends Resource
     public static function getPages(): array
     {
         return [
+            'index' => Pages\ListSites::route('/'),
             'view' => Pages\ViewSite::route('/{record}'),
             'general' => Pages\GeneralSites::route('/{record}/general'),
             'deployment' => Pages\DeploymentSites::route('/{record}/deployment'),
             'environment' => Pages\EnvironmentSites::route('/{record}/environment'),
             'deployment-log' => Pages\ListDeployment::route('/{record}/deployment-log'),
+            'repository' => Pages\Repository::route('{record}/repository')
         ];
     }
 
@@ -110,6 +118,7 @@ class SiteResource extends Resource
             Pages\GeneralSites::class,
             Pages\DeploymentSites::class,
             Pages\EnvironmentSites::class,
+            Pages\Repository::class,
             Pages\ListDeployment::class,
         ]);
     }

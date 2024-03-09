@@ -19,5 +19,5 @@ Route::group(['middleware' => ['web']], function () {
 
 Route::get('/', LandingPage::class);
 
-Route::get('/admin/sites', fn () => redirect(route('filament.admin.resources.servers.index')))
-    ->name('filament.admin.resources.sites.index');
+// Route::get('/admin/sites', fn () => redirect(route('filament.admin.resources.servers.index')))
+//     ->name('filament.admin.resources.sites.index');

@@ -41,12 +41,6 @@ class SitesRelationManager extends RelationManager
                         $set('site_user', DeployScript::make()->domain($get('domain'))->getSiteUser());
                     })
                     ->live(onBlur: true),
-                Select::make('repository')
-                    ->options($this->getRepositories())
-                    ->required()
-                    ->searchable(),
-                TextInput::make('branch')
-                    ->required(),
 
                 Section::make(function (string $operation) {
                     return $operation == 'create' ? 'What kind of site would you like to deploy?' : 'Detail';
@@ -75,7 +69,7 @@ class SitesRelationManager extends RelationManager
                             ->searchable()
                             ->hidden(function (Get $get) {
                                 // dd($get('project-type'));
-                                return ! ($get('initialize') === true && $get('project-type') === 'php');
+                                return !($get('initialize') === true && $get('project-type') === 'php');
                             })
                             ->columns(1),
                         Select::make('version')
@@ -91,7 +85,7 @@ class SitesRelationManager extends RelationManager
                             })
                             ->required()
                             ->hidden(function (Get $get) {
-                                return ! $get('project-type');
+                                return !$get('project-type');
                             }),
                     ])
                     ->columns(2),
@@ -122,7 +116,7 @@ class SitesRelationManager extends RelationManager
 
     protected function getCommits()
     {
-        if (! $this->cachedMountedTableActionRecord) {
+        if (!$this->cachedMountedTableActionRecord) {
             return collect([]);
         }
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
@@ -145,7 +139,7 @@ class SitesRelationManager extends RelationManager
     {
         $user = ConnectedAccount::query()->where('user_id', $this->getOwnerRecord()->created_by)->first();
 
-        return Cache::remember('repositories-'.$user->nickname, 86400, function () use ($user) {
+        return Cache::remember('repositories-' . $user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too
 
             return GithubApi::make($user->token)
@@ -174,74 +168,6 @@ class SitesRelationManager extends RelationManager
                         $data['created_by'] = auth()->user()->id;
 
                         return $data;
-                    })
-                    ->after(function (array $data, Site $record) {
-                        // TODO : Use nested Deployment Process on this Process
-                        if ($data['initialize']) {
-                            try {
-
-                                $server = $record->server;
-                                $connectedAccount = $server->owner->connectedAccount;
-                                $token = $connectedAccount->token;
-
-                                $apiToken = auth()->user()->createToken('github', ['site:deploy'])->plainTextToken;
-
-                                GithubApi::make($token)
-                                    ->repos($record->repository)
-                                    ->hooks()
-                                    ->post([
-                                        'name' => 'web',
-                                        'config' => [
-                                            'url' => route('api.admin.sites.deploy', [
-                                                'id' => $record->id,
-                                                'token' => $apiToken,
-                                            ]),
-                                            'content_type' => 'json',
-                                        ],
-                                    ]);
-
-                                $process = DeployScript::make()
-                                    ->site($record)
-                                    ->repositoryUrl("https://{$connectedAccount->nickname}:{$token}@github.com/{$record->repository}.git");
-
-                                if ($data['initialize']) {
-                                    $process = $process
-                                        ->siteUser($data['site_user'])
-                                        ->initiate(
-                                            template: $data['template'],
-                                            projectType: $data['project-type'],
-                                            version: $data['version']
-                                        );
-                                }
-
-                                DeploymentJob::dispatch($process, auth()->user());
-
-                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
-
-                                DeploymentJob::dispatch(
-                                    DeployScript::make()
-                                        ->server($record->server)
-                                        ->site($record)
-                                        ->databasePassword($process->getDatabasePassword()),
-                                    auth()->user(),
-                                    execute: SynchronizeEnvironment::make([
-                                        'path' => $path,
-                                    ])
-                                );
-
-                                return Notification::make('notif-1')
-                                    ->title('Your site is on deployment process!')
-                                    ->body('Please wait for a few minutes')
-                                    ->info()
-                                    ->persistent()
-                                    ->send();
-                            } catch (\Exception $exception) {
-                                Notification::make('failed-notification')
-                                    ->danger()
-                                    ->title('Site deployment failed')
-                                    ->send();
-                            }
-                        }
                     })
                     ->slideOver(),
             ])
@@ -273,9 +199,9 @@ class SitesRelationManager extends RelationManager
     public static function changeEnvVariable(string $envString, string $key, string $value)
     {
         $original = [];
-        preg_match('/^'.$key.'=(.+)$/m', $envString, $original);
+        preg_match('/^' . $key . '=(.+)$/m', $envString, $original);
 
-        $escaped = $original[0] ?? $key.'=';
+        $escaped = $original[0] ?? $key . '=';
 
         return preg_replace(
             "/^{$escaped}/m",

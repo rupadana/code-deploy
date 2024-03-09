@@ -42,15 +42,6 @@ class GeneralSites extends EditRecord
                     ->required()
                     ->maxLength(255)
                     ->columnSpanFull(),
-                Select::make('repository')
-                    ->options($resource->getRepositories($server->created_by))
-                    ->required()
-                    ->searchable(),
-                TextInput::make('branch')
-                    ->required(),
-
-                TextInput::make('directory'),
-                TextInput::make('site_user'),
 
                 Section::make(function (string $operation) {
                     return $operation == 'create' ? 'What kind of site would you like to deploy?' : 'Detail';
@@ -104,17 +95,6 @@ class GeneralSites extends EditRecord
             ]);
     }
 
-    /**
-     * @return array<Action | ActionGroup>
-     */
-    protected function getFormActions(): array
-    {
-        return [
-            $this->getSaveFormAction(),
-            $this->getWebhookUrlAction(),
-            $this->getCancelFormAction(),
-        ];
-    }
 
     protected function getWebhookUrlAction()
     {

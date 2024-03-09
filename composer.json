@@ -13,6 +13,7 @@
         "bezhansalleh/filament-google-analytics": "^2.0",
         "bezhansalleh/filament-shield": "^3.2",
         "chrisreedio/socialment": "3.x-dev",
+        "codeat3/blade-fluentui-system-icons": "^1.33",
         "filament/filament": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",

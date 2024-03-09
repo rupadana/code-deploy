@@ -27,6 +27,8 @@ class Site extends Model
         'created_by',
         'site_user',
         'quick_deploy',
+        'repository_installed',
+        'webhook_url'
     ];
 
     public function server(): BelongsTo
