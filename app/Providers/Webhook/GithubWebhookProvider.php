@@ -18,7 +18,7 @@ class GithubWebhookProvider extends WebhookProvider
         }
 
         if ($request->header('X-GitHub-Event') == 'push') {
-            $this->deploy($request->ref);
+            $this->deploy($request->after);
         }
     }
 }
