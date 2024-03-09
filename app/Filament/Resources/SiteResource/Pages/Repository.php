@@ -114,7 +114,11 @@ class Repository extends EditRecord
 
         parent::handleRecordUpdate($record, $data);
 
-        if (!($this->repository !== null && $record->repository_installed === 0)) {
+        if (! ($this->repository !== null && $record->repository_installed === 0)) {
+            return $record;
+        }
+
+        if ($this->repository === null) {
             return $record;
         }
 
@@ -159,7 +163,7 @@ class Repository extends EditRecord
 
             DeploymentJob::dispatch($process, auth()->user());
 
-            $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
+            $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
 
             DeploymentJob::dispatch(
                 DeployScript::make()

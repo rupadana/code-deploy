@@ -71,7 +71,7 @@ class GeneralSites extends EditRecord
                             ->searchable()
                             ->hidden(function (Get $get) {
                                 // dd($get('project-type'));
-                                return !($get('initialize') === true && $get('project-type') === 'php');
+                                return ! ($get('initialize') === true && $get('project-type') === 'php');
                             })
                             ->columns(1),
                         Select::make('version')
@@ -98,7 +98,7 @@ class GeneralSites extends EditRecord
                             })
                             ->required()
                             ->hidden(function (Get $get) {
-                                return !$get('project-type');
+                                return ! $get('project-type');
                             }),
                     ])
                     ->columns(2),

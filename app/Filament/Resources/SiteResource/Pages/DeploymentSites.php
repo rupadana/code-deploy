@@ -88,11 +88,11 @@ class DeploymentSites extends EditRecord
                                 $notification = Notification::make();
 
                                 if ($process->isSuccessful()) {
-                                    $this->dispatch('deploy-logs', 'out', $process->getOutput() . '\n' . $process->getOutput());
+                                    $this->dispatch('deploy-logs', 'out', $process->getOutput().'\n'.$process->getOutput());
                                     $notification->title('Deployment successfully')
                                         ->success();
                                 } else {
-                                    $this->dispatch('deploy-logs', 'out', $process->getErrorOutput() . '\n' . $process->getOutput());
+                                    $this->dispatch('deploy-logs', 'out', $process->getErrorOutput().'\n'.$process->getOutput());
                                     $notification->title('Deployment failed')
                                         ->danger();
                                 }
@@ -116,19 +116,19 @@ class DeploymentSites extends EditRecord
         if ($record->repository) {
             $components[] =
                 ViewField::make('commits')
-                ->view('view-commits')
-                ->viewData([
-                    'commits' => $resource->getCommits($this->getRecord())->toArray(),
-                    'record' => $this->getRecord(),
-                ])
-                ->columnSpanFull();
+                    ->view('view-commits')
+                    ->viewData([
+                        'commits' => $resource->getCommits($this->getRecord())->toArray(),
+                        'record' => $this->getRecord(),
+                    ])
+                    ->columnSpanFull();
         }
+
         return $components;
     }
 
     public function form(Form $form): Form
     {
-
 
         return $form
             ->schema($this->getCurrentFormSchema());
