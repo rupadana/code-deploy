@@ -83,8 +83,6 @@ class DeploymentSites extends EditRecord
 
                                 $process = $deployScript->execute();
 
-                                dd($process->getOutput(), $process->getErrorOutput());
-
                                 $notification = Notification::make();
 
                                 if ($process->isSuccessful()) {
