@@ -61,6 +61,7 @@ class EnvironmentSites extends EditRecord
                                     $process = DeployScript::make()
                                         ->site($record)
                                         ->downloadEnv(storage_path('private/.env.' . $record->domain . '.' . $record->id));
+                                    dd($process->getOutput(), $process->getErrorOutput());
 
                                     $record->environment = file_get_contents($path);
 
