@@ -48,20 +48,22 @@ class EnvironmentSites extends EditRecord
                             ->label('Sync now')
                             ->action(function (Site $record, Get $get, Set $set) {
 
-                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
+                                $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
+
                                 if ($record->environment) {
                                     file_put_contents($path, $get('environment'));
                                     $record->environment = $get('environment');
                                     $process = DeployScript::make()
                                         ->server($record->server)
                                         ->domain($record->domain)
-                                        ->uploadEnv(storage_path('private/.env.'.$record->domain.'.'.$record->id));
+                                        ->uploadEnv(storage_path('private/.env.' . $record->domain . '.' . $record->id));
                                     $record->save();
                                 } else {
                                     $process = DeployScript::make()
                                         ->server($record->server)
                                         ->domain($record->domain)
-                                        ->downloadEnv(storage_path('private/.env.'.$record->domain.'.'.$record->id));
+                                        ->downloadEnv(storage_path('private/.env.' . $record->domain . '.' . $record->id));
+                                    dd($process->getOutput(), $process->getErrorOutput());
 
                                     $record->environment = file_get_contents($path);
 
