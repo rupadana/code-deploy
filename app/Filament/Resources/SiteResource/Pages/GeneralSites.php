@@ -49,7 +49,7 @@ class GeneralSites extends EditRecord
                     ->schema([
                         Select::make('project-type')
                             ->options([
-                                // 'nodejs' => 'Node.js', TODO: Need some work here
+                                'nodejs' => 'Node.js', // TODO: Need some work here
                                 'php' => 'PHP',
                             ])
                             ->live()
@@ -71,23 +71,34 @@ class GeneralSites extends EditRecord
                             ->searchable()
                             ->hidden(function (Get $get) {
                                 // dd($get('project-type'));
-                                return ! ($get('initialize') === true && $get('project-type') === 'php');
+                                return !($get('initialize') === true && $get('project-type') === 'php');
                             })
                             ->columns(1),
                         Select::make('version')
                             ->disabledOn('edit')
                             ->options(function (Get $get) {
-                                if ($get('project-type') === 'php') {
-                                    return collect(DeployScript::PHP_VERSIONS)->mapWithKeys(function ($version) {
-                                        return [$version => $version];
-                                    });
+                                switch ($get('project-type')) {
+                                    case 'php':
+                                        $options = collect(DeployScript::PHP_VERSIONS)->mapWithKeys(function ($version) {
+                                            return [$version => $version];
+                                        });
+                                        break;
+                                    case 'nodejs':
+                                        $options = collect(DeployScript::NODE_VERSIONS)->mapWithKeys(function ($version) {
+                                            return [$version => $version];
+                                        });
+                                        break;
+
+                                    default:
+                                        $options = [];
+                                        break;
                                 }
 
-                                return [];
+                                return $options;
                             })
                             ->required()
                             ->hidden(function (Get $get) {
-                                return ! $get('project-type');
+                                return !$get('project-type');
                             }),
                     ])
                     ->columns(2),
