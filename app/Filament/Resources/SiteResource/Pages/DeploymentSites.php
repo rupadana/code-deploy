@@ -50,7 +50,7 @@ class DeploymentSites extends EditRecord
                             ->label(fn (Site $record) => $record->quick_deploy === 0 ? __('deploy.enable quick deploy') : __('deploy.disable quick deploy'))
                             ->color(fn (Site $record) => $record->quick_deploy === 0 ? 'primary' : 'danger')
                             ->action(function (Site $record) {
-                                if($record->quick_deploy === 0) {
+                                if ($record->quick_deploy === 0) {
                                     $record->quick_deploy = 1;
                                 } else {
                                     $record->quick_deploy = 0;
@@ -86,11 +86,11 @@ class DeploymentSites extends EditRecord
                                 $notification = Notification::make();
 
                                 if ($process->isSuccessful()) {
-                                    $this->dispatch('deploy-logs', 'out', $process->getOutput() . '\n' . $process->getOutput());
+                                    $this->dispatch('deploy-logs', 'out', $process->getOutput().'\n'.$process->getOutput());
                                     $notification->title('Deployment successfully')
                                         ->success();
                                 } else {
-                                    $this->dispatch('deploy-logs', 'out', $process->getErrorOutput() . '\n' . $process->getOutput());
+                                    $this->dispatch('deploy-logs', 'out', $process->getErrorOutput().'\n'.$process->getOutput());
                                     $notification->title('Deployment failed')
                                         ->danger();
                                 }

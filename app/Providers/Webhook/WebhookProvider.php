@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 
 abstract class WebhookProvider
 {
-
     protected string $name;
-
 
     public function __construct(protected ?Site $site, protected Request $request)
     {
@@ -21,6 +19,7 @@ abstract class WebhookProvider
     public static function make(?Site $site, Request $request)
     {
         $provider = new static($site, $request);
+
         return $provider;
     }
 
@@ -52,7 +51,6 @@ abstract class WebhookProvider
         }
     }
 
-
     abstract public function handle(): void;
 
     /**
@@ -66,7 +64,7 @@ abstract class WebhookProvider
     /**
      * Set the value of name
      *
-     * @return  self
+     * @return self
      */
     public function name($name)
     {

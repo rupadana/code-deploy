@@ -2,10 +2,6 @@
 
 namespace App\Providers\Webhook;
 
-use App\Jobs\Concerns\SetSiteSha;
-use App\Jobs\DeploymentJob;
-use App\Providers\Webhook\WebhookProvider;
-use App\Services\DeployScript;
 use Exception;
 
 class GitlabWebhookProvider extends WebhookProvider
@@ -17,7 +13,7 @@ class GitlabWebhookProvider extends WebhookProvider
         $record = $this->site;
         $request = $this->request;
 
-        if ('refs/heads/' . $record->branch !== $request->ref) {
+        if ('refs/heads/'.$record->branch !== $request->ref) {
             throw new Exception('nothing to do', 200);
         }
 

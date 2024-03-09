@@ -2,8 +2,8 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Pages\Page;
 use BezhanSalleh\FilamentGoogleAnalytics\Widgets;
+use Filament\Pages\Page;
 
 class AnalyticsPage extends Page
 {
@@ -30,6 +30,6 @@ class AnalyticsPage extends Page
 
     public static function getNavigationLabel(): string
     {
-        return "Analytics";
+        return 'Analytics';
     }
 }

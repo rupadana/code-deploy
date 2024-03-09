@@ -48,7 +48,7 @@ class EnvironmentSites extends EditRecord
                             ->label('Sync now')
                             ->action(function (Site $record, Get $get, Set $set) {
 
-                                $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
+                                $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
 
                                 if ($record->environment) {
                                     file_put_contents($path, $get('environment'));

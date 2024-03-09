@@ -26,7 +26,7 @@ class Site extends Model
         'directory',
         'created_by',
         'site_user',
-        'quick_deploy'
+        'quick_deploy',
     ];
 
     public function server(): BelongsTo

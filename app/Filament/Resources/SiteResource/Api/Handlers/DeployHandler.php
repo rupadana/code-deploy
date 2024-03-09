@@ -3,11 +3,8 @@
 namespace App\Filament\Resources\SiteResource\Api\Handlers;
 
 use App\Filament\Resources\SiteResource;
-use App\Jobs\Concerns\SetSiteSha;
-use App\Jobs\DeploymentJob;
 use App\Providers\Webhook\GithubWebhookProvider;
 use App\Providers\Webhook\GitlabWebhookProvider;
-use App\Services\DeployScript;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -59,7 +56,7 @@ class DeployHandler extends Handlers
             )
                 ->first();
 
-            if (!$record) {
+            if (! $record) {
                 return static::sendNotFoundResponse();
             }
 
@@ -69,7 +66,7 @@ class DeployHandler extends Handlers
 
             if ($request->header('X-GitHub-Event')) {
                 $provider = GithubWebhookProvider::make($record, $request);
-            } else if ($request->header('X-Gitlab-Event')) {
+            } elseif ($request->header('X-Gitlab-Event')) {
                 $provider = GitlabWebhookProvider::make($record, $request);
             }
 
@@ -77,7 +74,7 @@ class DeployHandler extends Handlers
                 $provider->handle();
 
                 return response()->json([
-                    'message' => 'on process'
+                    'message' => 'on process',
                 ]);
             } else {
                 return response()->json([
