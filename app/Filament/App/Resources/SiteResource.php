@@ -94,7 +94,7 @@ class SiteResource extends Resource
                     'per_page' => 200,
                 ]);
 
-            if ($data['message']) {
+            if (isset($data['message'])) {
                 return [];
             }
 
