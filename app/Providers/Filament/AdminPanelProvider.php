@@ -52,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
                         'repo', 'read:user',
                     ]),
                 ApiServicePlugin::make(),
-                // FilamentExceptionsPlugin::make(),
+                FilamentExceptionsPlugin::make(),
                 EnvironmentIndicatorPlugin::make(),
             ])
 
