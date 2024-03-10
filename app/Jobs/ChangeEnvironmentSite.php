@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Filament\Resources\ServerResource\RelationManagers\SitesRelationManager;
+use App\Filament\App\Resources\ServerResource\RelationManagers\SitesRelationManager;
 use App\Models\Site;
 use App\Services\DeployScript;
 use Illuminate\Bus\Queueable;
