@@ -46,7 +46,6 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentUserResourcePlugin::make(),
                 FilamentShieldPlugin::make(),
-                // FilamentAnnouncePlugin::make(),
                 SocialmentPlugin::make()
                     ->registerProvider('github', 'fab-github', 'Github', scopes: [
                         'repo', 'read:user',
