@@ -25,7 +25,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use Rupadana\ApiService\ApiServicePlugin;
-use Rupadana\FilamentAnnounce\FilamentAnnouncePlugin;
 use Rupadana\FilamentUserResource\FilamentUserResourcePlugin;
 
 class AdminPanelProvider extends PanelProvider
