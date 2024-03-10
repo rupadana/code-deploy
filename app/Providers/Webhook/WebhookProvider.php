@@ -47,7 +47,7 @@ abstract class WebhookProvider
 
             // TODO : is it right to use job here? because we can't notify to github when its failed
 
-            DeploymentJob::dispatch($process, $server->owner, finish: SetSiteSha::make(['sha' => $commit]));
+            DeploymentJob::dispatch($process, auth()->user(), finish: SetSiteSha::make(['sha' => $commit]));
         }
     }
 
