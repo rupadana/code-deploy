@@ -26,7 +26,7 @@
         "phpseclib/phpseclib": "~2.0",
         "pxlrbt/filament-environment-indicator": "^2.0",
         "rupadana/filament-announce": "^3.1",
-        "rupadana/filament-api-service": "^3.0",
+        "rupadana/filament-api-service": "^3.1",
         "rupadana/filament-user-resource": "^1.0",
         "rupadana/github-rest-api": "^1.0",
         "spatie/ssh": "^1.9"

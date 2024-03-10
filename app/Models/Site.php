@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Site extends Model
 {
@@ -34,6 +35,11 @@ class Site extends Model
     public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class, 'server_id');
+    }
+
+    public function owner(): MorphToMany
+    {
+        return $this->morphToMany(Team::class, 'teamable');
     }
 
     public function deployment(): HasMany

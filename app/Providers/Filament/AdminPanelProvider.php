@@ -52,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
                         'repo', 'read:user',
                     ]),
                 ApiServicePlugin::make(),
-                FilamentExceptionsPlugin::make(),
+                // FilamentExceptionsPlugin::make(),
                 EnvironmentIndicatorPlugin::make(),
             ])
 
@@ -89,6 +89,10 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            // ->topNavigation()
+            ->profile()
+            ->spa()
+            // ->topbar(false)
             ->authMiddleware([
                 Authenticate::class,
             ]);
