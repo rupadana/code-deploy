@@ -112,7 +112,7 @@ class Repository extends EditRecord
 
         parent::handleRecordUpdate($record, $data);
 
-        if (! ($data['repository'] !== null && $record->repository_installed === 0)) {
+        if (!($data['repository'] !== null && $record->repository_installed === 0)) {
             return $record;
         }
 
@@ -153,7 +153,7 @@ class Repository extends EditRecord
 
             DeploymentJob::dispatch($process, auth()->user());
 
-            $path = storage_path('private/.env.'.$record->domain.'.'.$record->id);
+            $path = storage_path('private/.env.' . $record->domain . '.' . $record->id);
 
             DeploymentJob::dispatch(
                 DeployScript::make()
@@ -169,13 +169,17 @@ class Repository extends EditRecord
             $record->repository_installed = 1;
             $record->webhook_url = $webhookUrl;
             $record->save();
-            return $record;
         } catch (\Exception $exception) {
             Notification::make('failed-notification')
                 ->danger()
                 ->title('Site deployment failed')
                 ->send();
+
+            throw $exception;
         }
+
+
+        return $record;
     }
 
     protected function getSavedNotification(): ?Notification
