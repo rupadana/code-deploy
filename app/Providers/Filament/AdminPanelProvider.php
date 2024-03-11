@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\LaravelPulse;
 use App\Livewire\LoginPage;
 use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use BezhanSalleh\FilamentGoogleAnalytics\Widgets;
@@ -56,6 +57,7 @@ class AdminPanelProvider extends PanelProvider
 
             ->pages([
                 Pages\Dashboard::class,
+                // LaravelPulse::class
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

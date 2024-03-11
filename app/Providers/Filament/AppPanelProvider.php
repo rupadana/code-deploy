@@ -63,6 +63,8 @@ class AppPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('10s')
             ->tenant(Team::class, ownershipRelationship: 'owner', slugAttribute: 'team_id')
             ->tenantRegistration(RegisterTeam::class)
             ->authMiddleware([
