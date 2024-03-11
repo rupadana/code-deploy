@@ -123,7 +123,7 @@ class Repository extends EditRecord
         try {
 
             $server = $record->server;
-            $connectedAccount = $server->owner->connectedAccount;
+            $connectedAccount = auth()->user()->connectedAccount;
             $token = $connectedAccount->token;
 
             $webhookUrl = SiteService::makeWebHookUrl($record);
