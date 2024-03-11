@@ -112,11 +112,11 @@ class Repository extends EditRecord
 
         parent::handleRecordUpdate($record, $data);
 
-        if (! ($this->repository !== null && $record->repository_installed === 0)) {
+        if (! ($data['repository'] !== null && $record->repository_installed === 0)) {
             return $record;
         }
 
-        if ($this->repository === null) {
+        if ($data['repository'] === null) {
             return $record;
         }
 
@@ -169,6 +169,7 @@ class Repository extends EditRecord
             $record->repository_installed = 1;
             $record->webhook_url = $webhookUrl;
             $record->save();
+            return $record;
         } catch (\Exception $exception) {
             Notification::make('failed-notification')
                 ->danger()
