@@ -70,10 +70,6 @@ class GeneralSites extends EditRecord
                             ->options($resource->getTemplates($server))
                             ->disabledOn('edit')
                             ->searchable()
-                            ->hidden(function (Get $get) {
-                                // dd($get('project-type'));
-                                return ! ($get('initialize') === true && $get('project-type') === 'php');
-                            })
                             ->columns(1),
                         Select::make('version')
                             ->disabledOn('edit')
