@@ -1,5 +1,6 @@
 on:
-  push:
+  release:
+    types: [released]
 
 jobs:
   message:
@@ -9,4 +10,4 @@ jobs:
       uses: tsickert/discord-webhook@v5.3.0
       with:
         webhook-url: ${{ secrets.WEBHOOK_URL }}
-        content: "Test ${{ github.event_name }}"
+        content: "Released Version ${{ github.event.release.name }} \n ${{ github.event.release.body }}"
