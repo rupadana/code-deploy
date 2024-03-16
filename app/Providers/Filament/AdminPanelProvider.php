@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\App\Resources\ServerResource;
+use App\Filament\App\Resources\SiteResource;
 use App\Filament\Pages\LaravelPulse;
 use App\Livewire\LoginPage;
 use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
@@ -42,7 +44,10 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Blue,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
+            ->resources([
+                ServerResource::class,
+                SiteResource::class
+            ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->plugins([
                 FilamentUserResourcePlugin::make(),
