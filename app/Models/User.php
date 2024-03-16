@@ -76,7 +76,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
      */
     public function getTenants(Panel $panel): array|Collection
     {
-        return Team::all();
+        return $this->teams;
     }
 
     public function teams(): BelongsToMany
