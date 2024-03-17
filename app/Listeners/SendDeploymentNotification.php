@@ -34,6 +34,5 @@ class SendDeploymentNotification
                 'content' => $content
             ]);
         });
-        
     }
 }
