@@ -2,6 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Events\DeploymentFailed;
+use App\Events\DeploymentNotificationEvent;
+use App\Events\DeploymentSuccess;
 use App\Jobs\Concerns\Abstracts\DeploymentProcess;
 use App\Jobs\Concerns\Abstracts\ExecuteDeploymentProcess;
 use App\Jobs\Concerns\DefaultExecuteDeploymentProcess;
@@ -98,6 +101,7 @@ class DeploymentJob implements ShouldQueue
 
     protected function sendSuccessNotification(): void
     {
+        event(new DeploymentNotificationEvent($this->script->getSite()));
         Notification::make()
             ->success()
             ->title('Deployment successfully')
@@ -108,6 +112,7 @@ class DeploymentJob implements ShouldQueue
 
     protected function sendErrorNotification(): void
     {
+        event(new DeploymentNotificationEvent($this->script->getSite(), false));
         Notification::make()
             ->danger()
             ->title('Deployment failed')

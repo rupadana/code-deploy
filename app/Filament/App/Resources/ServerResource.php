@@ -93,6 +93,7 @@ class ServerResource extends Resource
             'edit' => Pages\EditServer::route('/{record}/edit'),
             'site' => Pages\ManageSite::route('/{record}/site'),
             'deploy-logs' => Pages\DeploymentLogs::route('/{record}/deploy-logs'),
+            'notification' => Pages\NotificationPage::route('/{record}/notification')
         ];
     }
 
@@ -103,6 +104,7 @@ class ServerResource extends Resource
             Pages\ViewServer::class,
             Pages\ManageSite::class,
             Pages\DeploymentLogs::class,
+            Pages\NotificationPage::class
         ]);
     }
 }

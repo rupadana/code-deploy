@@ -18,6 +18,11 @@ class Server extends Model
         'host',
         'ssh_port',
         'created_by',
+        'notification',
+    ];
+
+    protected $casts = [
+        'notification' => 'array'
     ];
 
     public function sites(): HasMany
