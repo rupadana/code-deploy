@@ -16,6 +16,5 @@ class DeploymentNotificationEvent
      */
     public function __construct(public Site $site, public bool $success = true)
     {
-
     }
 }
