@@ -20,6 +20,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('test-notification', function() {
+Artisan::command('test-notification', function () {
     event(new DeploymentNotificationEvent(Site::find(81)));
 });

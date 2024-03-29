@@ -2,9 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Events\DeploymentFailed;
 use App\Events\DeploymentNotificationEvent;
-use App\Events\DeploymentSuccess;
 use App\Jobs\Concerns\Abstracts\DeploymentProcess;
 use App\Jobs\Concerns\Abstracts\ExecuteDeploymentProcess;
 use App\Jobs\Concerns\DefaultExecuteDeploymentProcess;

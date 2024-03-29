@@ -21,8 +21,8 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         DeploymentNotificationEvent::class => [
-            SendDeploymentNotification::class
-        ]
+            SendDeploymentNotification::class,
+        ],
     ];
 
     /**

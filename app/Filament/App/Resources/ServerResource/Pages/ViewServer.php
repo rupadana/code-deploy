@@ -48,6 +48,34 @@ class ViewServer extends ViewRecord
                         ->body($process->getErrorOutput())
                         ->send();
                 }),
+            Action::make('recreate-ssh-key')
+                ->action(function (Server $record) {
+                    $ssh_key_name = str()->uuid()->toString();
+
+                    $rsa = new \phpseclib\Crypt\RSA();
+                    $rsa->setPrivateKeyFormat(\phpseclib\Crypt\RSA::PUBLIC_FORMAT_OPENSSH);
+                    $rsa->setPublicKeyFormat(\phpseclib\Crypt\RSA::PUBLIC_FORMAT_OPENSSH);
+                    $rsa->setComment('deployer@deploy.codecrafters.id');
+                    $keys = $rsa->createKey(4096);
+                    $publicKey = $keys['publickey'];
+                    $privateKey = $keys['privatekey'];
+
+                    Storage::disk('private')->put($ssh_key_name, $privateKey);
+                    Storage::disk('private')->put($ssh_key_name.'.pub', $publicKey);
+
+                    $path = storage_path('private/'.$ssh_key_name);
+
+                    exec('chmod 600 '.$path);
+
+                    $record->ssh_key_name = $ssh_key_name;
+
+                    $record->save();
+
+                    return Notification::make('success-notification')
+                        ->success()
+                        ->title('SSH Key recreated successfully')
+                        ->send();
+                }),
         ];
     }
 

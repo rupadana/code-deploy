@@ -30,7 +30,7 @@ class Site extends Model
         'quick_deploy',
         'repository_installed',
         'webhook_url',
-        'template'
+        'template',
     ];
 
     public function server(): BelongsTo

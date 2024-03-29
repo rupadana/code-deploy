@@ -15,8 +15,8 @@ return new class extends Migration
             $table->text('notification')->nullable();
         });
     }
-    /**
 
+    /**
      * Reverse the migrations.
      */
     public function down(): void

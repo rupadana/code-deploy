@@ -3,7 +3,6 @@
 namespace App\Filament\App\Resources\ServerResource\Pages;
 
 use App\Filament\App\Resources\ServerResource;
-use Filament\Actions;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -33,13 +32,13 @@ class NotificationPage extends EditRecord
                 Select::make('notification.provider')
                     ->label('Provider')
                     ->options([
-                        'discord' => 'Discord'
+                        'discord' => 'Discord',
                     ]),
                 Repeater::make('notification.webhook')
                     ->schema([
                         TextInput::make('url')
                             ->url(),
-                    ])
+                    ]),
 
             ])
             ->columns(1);

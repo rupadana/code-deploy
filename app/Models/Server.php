@@ -22,7 +22,7 @@ class Server extends Model
     ];
 
     protected $casts = [
-        'notification' => 'array'
+        'notification' => 'array',
     ];
 
     public function sites(): HasMany
