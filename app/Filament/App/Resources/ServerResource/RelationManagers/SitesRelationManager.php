@@ -164,9 +164,6 @@ class SitesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('domain'),
             ])
-            ->filters([
-                //
-            ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data) {

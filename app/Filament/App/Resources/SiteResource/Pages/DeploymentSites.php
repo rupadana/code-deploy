@@ -72,11 +72,15 @@ class DeploymentSites extends EditRecord
                                 $deployScript = DeployScript::make()
                                     ->server($record->server)
                                     ->site($record)
-                                    ->actAsSiteUser()
-                                    ->toSiteDirectory()
+                                    ->actAsSiteUser();
+
+                                if ($record->{'project-type'} == 'nodejs') {
+                                    $deployScript->script('source .nvm/nvm.sh');
+                                }
+
+                                $deployScript->toSiteDirectory()
                                     ->gitStash()
                                     ->gitStashClear()
-                                    ->gitFetch()
                                     ->checkoutTo($record->branch)
                                     ->gitPull()
                                     ->script(explode('\n', substr(substr(json_encode($record->script), 1), 0, -1)));

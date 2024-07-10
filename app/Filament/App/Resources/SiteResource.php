@@ -74,13 +74,6 @@ class SiteResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public function getRepositories(string $user_id)
     {
         $user = ConnectedAccount::query()->where('user_id', $user_id)->first();

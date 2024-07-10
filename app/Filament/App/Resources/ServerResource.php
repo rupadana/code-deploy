@@ -53,9 +53,6 @@ class ServerResource extends Resource
                     ->sortable(),
 
             ])
-            ->filters([
-                //
-            ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Action::make('manage-site')
@@ -77,11 +74,6 @@ class ServerResource extends Resource
 
                 return $query->where('created_by', auth()->user()->id);
             });
-    }
-
-    public static function getRelations(): array
-    {
-        return [];
     }
 
     public static function getPages(): array

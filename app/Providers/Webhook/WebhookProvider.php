@@ -12,9 +12,7 @@ abstract class WebhookProvider
 {
     protected string $name;
 
-    public function __construct(protected ?Site $site, protected Request $request)
-    {
-    }
+    public function __construct(protected ?Site $site, protected Request $request) {}
 
     public static function make(?Site $site, Request $request)
     {

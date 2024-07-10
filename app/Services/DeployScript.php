@@ -339,7 +339,8 @@ class DeployScript
 
     public function actAsSiteUser(?string $siteUser = null): static
     {
-        return $this->script('su '.$this->getSiteUser());
+        return $this->script('su '.$this->getSiteUser())
+            ->script('cd');
     }
 
     public function checkoutTo(string $commit): static

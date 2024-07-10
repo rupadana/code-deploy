@@ -14,7 +14,5 @@ class DeploymentNotificationEvent
     /**
      * Create a new event instance.
      */
-    public function __construct(public Site $site, public bool $success = true)
-    {
-    }
+    public function __construct(public Site $site, public bool $success = true) {}
 }

@@ -6,9 +6,7 @@ use App\Services\DeployScript;
 
 abstract class DeploymentProcess
 {
-    public function __construct(protected array $data = [])
-    {
-    }
+    public function __construct(protected array $data = []) {}
 
     public static function make(array $data = []): static
     {

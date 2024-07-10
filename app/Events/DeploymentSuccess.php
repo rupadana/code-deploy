@@ -14,7 +14,5 @@ class DeploymentSuccess
     /**
      * Create a new event instance.
      */
-    public function __construct(protected Site $site)
-    {
-    }
+    public function __construct(protected Site $site) {}
 }
