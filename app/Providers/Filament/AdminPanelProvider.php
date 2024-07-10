@@ -10,6 +10,7 @@ use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use BezhanSalleh\FilamentGoogleAnalytics\Widgets;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use ChrisReedIO\Socialment\SocialmentPlugin;
+use Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -59,6 +60,9 @@ class AdminPanelProvider extends PanelProvider
                 ApiServicePlugin::make(),
                 FilamentExceptionsPlugin::make(),
                 EnvironmentIndicatorPlugin::make(),
+                FilamentJobsMonitorPlugin::make()
+                    ->enableNavigation()
+
             ])
 
             ->pages([
