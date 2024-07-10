@@ -10,7 +10,6 @@
     "require": {
         "php": "^8.1",
         "bezhansalleh/filament-exceptions": "^2.1",
-        "bezhansalleh/filament-google-analytics": "^2.0",
         "bezhansalleh/filament-shield": "^3.2",
         "chrisreedio/socialment": "3.x-dev",
         "codeat3/blade-fluentui-system-icons": "^1.33",

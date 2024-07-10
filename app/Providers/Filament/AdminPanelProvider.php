@@ -7,7 +7,6 @@ use App\Filament\App\Resources\SiteResource;
 use App\Filament\Pages\LaravelPulse;
 use App\Livewire\LoginPage;
 use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
-use BezhanSalleh\FilamentGoogleAnalytics\Widgets;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
@@ -72,19 +71,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
-
-                Widgets\PageViewsWidget::class,
-                Widgets\VisitorsWidget::class,
-                Widgets\ActiveUsersOneDayWidget::class,
-                Widgets\ActiveUsersSevenDayWidget::class,
-                Widgets\ActiveUsersTwentyEightDayWidget::class,
-                Widgets\SessionsWidget::class,
-                Widgets\SessionsDurationWidget::class,
-                Widgets\SessionsByCountryWidget::class,
-                Widgets\SessionsByDeviceWidget::class,
-                Widgets\MostVisitedPagesWidget::class,
-                Widgets\TopReferrersListWidget::class,
+                FilamentInfoWidget::class
             ])
             ->databaseNotifications()
             ->databaseNotificationsPolling('10s')
