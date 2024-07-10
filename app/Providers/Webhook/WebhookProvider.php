@@ -35,7 +35,12 @@ abstract class WebhookProvider
                 ->server($server)
                 ->site($this->site)
                 ->siteUser($this->site->site_user)
-                ->actAsSiteUser()
+                ->actAsSiteUser();
+
+            if ($this->site->{'project-type'} == 'nodejs') {
+                $process->script('source .nvm/nvm.sh');
+            }
+            $process
                 ->toSiteDirectory()
                 ->gitStash()
                 ->gitStashClear()
