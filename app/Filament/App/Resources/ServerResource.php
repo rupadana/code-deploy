@@ -66,14 +66,7 @@ class ServerResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->modifyQueryUsing(function (Builder $query) {
-                if (auth()->user()->hasRole(['super_admin'])) {
-                    return $query;
-                }
-
-                return $query->where('created_by', auth()->user()->id);
-            });
+            ]);
     }
 
     public static function getPages(): array
