@@ -48,16 +48,4 @@ class Site extends Model
     {
         return $this->hasMany(Deployment::class, 'site_id');
     }
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope('team', function (Builder $query) {
-            if (auth()->hasUser()) {
-                $query
-                    ->join('teamables', 'teamables.teamable_id', '=', 'sites.id')
-                    ->where('teamables.teamable_type', static::class)
-                    ->whereIn('teamables.team_id', auth()->user()->teams->map(fn($team) =>$team->id)->toArray());
-            }
-        });
-    }
 }

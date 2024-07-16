@@ -23,7 +23,7 @@ class ServerPolicy
      */
     public function view(User $user, Server $server): bool
     {
-        return $user->can('view_server') && $server->created_by == $user->id;
+        return $user->can('view_server');
     }
 
     /**
@@ -39,7 +39,7 @@ class ServerPolicy
      */
     public function update(User $user, Server $server): bool
     {
-        return $user->can('update_server') && $server->created_by == $user->id;
+        return $user->can('update_server');
     }
 
     /**
@@ -47,7 +47,7 @@ class ServerPolicy
      */
     public function delete(User $user, Server $server): bool
     {
-        return $user->can('delete_server') && $server->created_by == $user->id;
+        return $user->can('delete_server');
     }
 
     /**
@@ -63,7 +63,7 @@ class ServerPolicy
      */
     public function forceDelete(User $user, Server $server): bool
     {
-        return $user->can('force_delete_server') && $server->created_by == $user->id;
+        return $user->can('force_delete_server');
     }
 
     /**
@@ -79,7 +79,7 @@ class ServerPolicy
      */
     public function restore(User $user, Server $server): bool
     {
-        return $user->can('restore_server') && $server->created_by === $user->id;
+        return $user->can('restore_server');
     }
 
     /**
@@ -95,7 +95,7 @@ class ServerPolicy
      */
     public function replicate(User $user, Server $server): bool
     {
-        return $user->can('replicate_server') && $server->created_by === $user->id;
+        return $user->can('replicate_server');
     }
 
     /**
