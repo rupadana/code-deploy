@@ -45,9 +45,10 @@ class Server extends Model
     {
         static::addGlobalScope('team', function (Builder $query) {
             if (auth()->hasUser()) {
-                $query->where('team_id', auth()->user()->team_id);
-                // or with a `team` relationship defined:
-                $query->whereBelongsTo(auth()->user()->team);
+                $query
+                    ->join('teamables', 'teamables.teamable_id', '=', 'servers.id')
+                    ->where('teamables.teamable_type', static::class)
+                    ->whereIn('teamables.team_id', auth()->user()->teams->map(fn($team) =>$team->id)->toArray());
             }
         });
     }
