@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.from-primaryLight {
+    --tw-gradient-from: rgb(var(--primary-300));
+    --tw-gradient-to: rgba(var(--primary-300), 0.5);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-secondaryLight {
+    --tw-gradient-to: rgb(var(--primary-300));
+}
