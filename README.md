@@ -1,54 +1,37 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Code Deploy
+
+CodeDeploy is an advanced deployment tool specifically designed for developers who want to streamline the process of deploying web applications directly from GitHub.
+
+CodeDeploy is an advanced deployment tool specifically designed for developers who want to streamline the process of deploying web applications directly from GitHub. Leveraging the Push to Deploy method, CodeDeploy simplifies the deployment workflow, enabling developers to deploy code with a single push to their repository.
+
+### Key Features:
+
+- **Push to Deploy**: Automatically deploy your web application with each push to your GitHub repository, eliminating the need for manual deployments.
+
+- **Optimized Performance**: Engineered for speed and efficiency, CodeDeploy ensures that your web projects are deployed quickly and reliably.
+
+- **Automated Testing**: Run automated tests before deployment to catch issues early, ensuring your production environment is always stable.
+
+- **Rollback Capabilities**: Easily roll back to a previous version of your application if something goes wrong, minimizing downtime and disruption.
+
+- **Secure Deployments**: Built with security in mind, CodeDeploy integrates seamlessly with GitHub, providing a secure deployment pipeline for your web projects.
+
+- **User-Friendly Interface**: Manage your deployments with an intuitive and easy-to-use interface designed to simplify the deployment process for developers of all skill levels.
+
+### Who It's For:
+
+CodeDeploy is ideal for web developers, DevOps teams, and software development companies looking to automate and optimize their deployment processes. Whether you're working on a small personal project or a large-scale web application, CodeDeploy provides the tools you need to deploy with confidence.
+
+### Why Choose CodeDeploy?
+
+CodeDeploy takes the complexity out of web deployment. By integrating directly with GitHub, it offers a seamless, automated solution that saves time, reduces errors, and ensures your web applications are always up to date. As an open-source project, CodeDeploy is continuously evolving with contributions from a vibrant community of developers. With its powerful features, user-friendly design, and the flexibility of open-source, CodeDeploy is the go-to choice for developers who want to focus on coding, not deploying.
 
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Documentation
 
-## About Laravel
+You can see [Documentation here](https://docs.codecrafters.id/project/code-deploy) 
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
 
 ## Contributing
 
@@ -60,7 +43,7 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [rupadana@codecrafters.id](mailto:rupadana@codecrafters.id). All security vulnerabilities will be promptly addressed.
 
 ## License
 

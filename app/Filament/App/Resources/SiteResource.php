@@ -78,6 +78,8 @@ class SiteResource extends Resource
     {
         $user = ConnectedAccount::query()->where('user_id', $user_id)->first();
 
+        if(!$user) return [];
+
         return Cache::remember('repositories-'.$user->nickname, 86400, function () use ($user) {
             // TODO: Get repository from organization too.
             $data = GithubApi::make($user->token)
