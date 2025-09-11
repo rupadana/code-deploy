@@ -1,0 +1,16 @@
+# Abaikan dependensi yang akan di-install di dalam kontainer
+vendor/
+node_modules/
+
+# Abaikan file Git
+.git/
+.gitignore
+
+# Abaikan file environment, karena akan di-inject saat runtime
+.env
+
+# Abaikan file Docker itu sendiri
+Dockerfile
+docker-compose.yml
+docker-compose.production.yml
+.dockerignore
