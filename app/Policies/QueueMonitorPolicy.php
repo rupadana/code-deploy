@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Rupadana\ApiService\Models\Token;
+use Croustibat\FilamentJobsMonitor\Models\QueueMonitor;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class TokenPolicy
+class QueueMonitorPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class TokenPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_token');
+        return $user->can('view_any_queue::monitor');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Token $token): bool
+    public function view(User $user, QueueMonitor $queueMonitor): bool
     {
-        return $user->can('view_token');
+        return $user->can('view_queue::monitor');
     }
 
     /**
@@ -31,23 +31,23 @@ class TokenPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_token');
+        return $user->can('create_queue::monitor');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Token $token): bool
+    public function update(User $user, QueueMonitor $queueMonitor): bool
     {
-        return $user->can('update_token');
+        return $user->can('update_queue::monitor');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Token $token): bool
+    public function delete(User $user, QueueMonitor $queueMonitor): bool
     {
-        return $user->can('delete_token');
+        return $user->can('delete_queue::monitor');
     }
 
     /**
@@ -55,15 +55,15 @@ class TokenPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_token');
+        return $user->can('delete_any_queue::monitor');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Token $token): bool
+    public function forceDelete(User $user, QueueMonitor $queueMonitor): bool
     {
-        return $user->can('force_delete_token');
+        return $user->can('force_delete_queue::monitor');
     }
 
     /**
@@ -71,15 +71,15 @@ class TokenPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_token');
+        return $user->can('force_delete_any_queue::monitor');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Token $token): bool
+    public function restore(User $user, QueueMonitor $queueMonitor): bool
     {
-        return $user->can('restore_token');
+        return $user->can('restore_queue::monitor');
     }
 
     /**
@@ -87,15 +87,15 @@ class TokenPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_token');
+        return $user->can('restore_any_queue::monitor');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Token $token): bool
+    public function replicate(User $user, QueueMonitor $queueMonitor): bool
     {
-        return $user->can('replicate_token');
+        return $user->can('replicate_queue::monitor');
     }
 
     /**
@@ -103,6 +103,6 @@ class TokenPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_token');
+        return $user->can('reorder_queue::monitor');
     }
 }
