@@ -3,7 +3,7 @@
 }
 
 # The domain name of your server
-:80 {
+deploy.midda.id {
 	# Set the webroot to the public/ directory
 	root * public/
 	# Enable compression (optional)

@@ -3,9 +3,10 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Laravel\Sanctum\Sanctum;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,5 +38,10 @@ class AppServiceProvider extends ServiceProvider
 
             return null;
         });
+
+        if ($this->app->environment() === 'production') {
+            URL::forceScheme('https');
+            
+        }
     }
 }
